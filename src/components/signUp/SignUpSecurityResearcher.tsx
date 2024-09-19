@@ -86,15 +86,19 @@ export default function SignUpSecurityResearcher() {
         <Input.Wrapper error={warning.name} className={styles.input}>
           <Input placeholder="أدخل اسمك الكامل" rightSection={<IconUser size={16} />} name='name' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.email} className={styles.input}>
           <Input placeholder="أدخل البريد الإلكتروني" rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.phone} className={styles.input}>
           <Input placeholder="أدخل رقم الهاتف" rightSection={<IconPhone size={16} />} name='phone' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.password} className={styles.input}>
           <PasswordInput placeholder="أدخل كلمة المرور" name='password' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.code} className={styles.input}>
           <Input placeholder="أدخل كود التسجيل" rightSection={<IconCode size={16} />} name='code' onChange={handleChange} />
         </Input.Wrapper>

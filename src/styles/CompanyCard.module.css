@@ -1,0 +1,30 @@
+@media (width<700px) {
+    .card{
+        width: 250px !important;
+    }
+}
+@media (width<600px) {
+    .card{
+        width: 100% !important;
+    }
+}
+
+@media (width<455px) {
+    .search{
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (width<300px) {
+    .card{
+        font-size: x-small;
+        padding: 3px;
+    }
+    .details{
+        gap: 10px;
+    }
+    .details>div{
+        gap: 2px;
+    }
+}

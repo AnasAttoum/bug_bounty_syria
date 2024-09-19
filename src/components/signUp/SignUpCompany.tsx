@@ -94,18 +94,23 @@ export default function SignUpCompany() {
         <Input.Wrapper error={warning.domain} className={styles.input}>
           <Input placeholder="أدخل دومين الشركة" rightSection={<IconWorld size={16} />} name='domain' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.name} className={styles.input}>
           <Input placeholder="أدخل اسم الشركة" rightSection={<IconUser size={16} />} name='name' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.type} className={styles.input}>
           <NativeSelect data={['شركة حكومية', 'شركة خاصة']} name='type' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.employeesNumber} className={styles.input}>
           <Input placeholder="أدخل عدد موظفين الشركة" rightSection={<IconUsers size={16} />} name='employeesNumber' onChange={handleChange} />
         </Input.Wrapper>
+
         <Input.Wrapper error={warning.email} className={styles.input}>
           <Input placeholder="أدخل البريد الإلكتروني للشركة" rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
         </Input.Wrapper>
+        
         <Input.Wrapper error={warning.password} className={styles.input}>
           <PasswordInput placeholder="أدخل كلمة المرور" name='password' onChange={handleChange} />
         </Input.Wrapper>

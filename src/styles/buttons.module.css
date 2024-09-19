@@ -1,5 +1,16 @@
+.btn,.btn2{
+  transition: all .3s;
+}
+
 .btn:hover{
     &:hover {
         background-color: var(--secondary);
       }
+}
+
+.btn2:hover{
+  &:hover {
+      background-color: var(--primary);
+      color: white;
+    }
 }

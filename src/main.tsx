@@ -6,6 +6,7 @@ import styles from './styles/signUp.module.css'
 
 import '@mantine/core/styles.css';
 import { createTheme, Input, MantineProvider } from '@mantine/core';
+import StoreProvider from './lib/StoreProvider.tsx'
 
 
 const theme = createTheme({
@@ -24,7 +25,9 @@ const theme = createTheme({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
-      <App />
+      <StoreProvider>
+        <App />
+      </StoreProvider>
     </MantineProvider>
   </StrictMode>,
 )

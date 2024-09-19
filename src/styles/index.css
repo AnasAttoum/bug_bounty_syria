@@ -1,8 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
     --primary: #B21222;
-    --secondary: rgba(178, 18, 34, 0.40)
+    --secondary: rgba(178, 18, 34, 0.50)
+}
+
+body {
+    font-family: "Cairo", sans-serif !important;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings:"slnt" 0;
 }

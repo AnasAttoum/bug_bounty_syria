@@ -72,7 +72,7 @@ export default function SignUpCompany() {
     else
       setWarning(prev => ({ ...prev, password: '' }))
 
-    if (data.domain !== '' && data.name !== '' && data.type !== '' && data.employeesNumber !== '' && !isNaN(parseInt(data.employeesNumber)) && data.email !== '' && data.password.length >= 6 && terms.current === true) {
+    if (data.domain !== '' && data.name !== '' && data.type !== '' && data.employeesNumber !== '' && !isNaN(parseInt(data.employeesNumber)) && data.email !== '' && regEmail.test(data.email) && data.password.length >= 6 && terms.current === true) {
       console.log(data)
 
       setWarning({

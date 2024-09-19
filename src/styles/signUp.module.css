@@ -51,9 +51,9 @@
 .input {
   width: 49%;
   &:focus-within {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-    border-radius: 5px;
+    /* outline: 2px solid var(--primary); */
+    border-color: var(--primary);
+    /* border-radius: 5px; */
   }
 }
 

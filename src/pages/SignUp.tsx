@@ -1,11 +1,13 @@
-import { Tabs } from '@mantine/core';
+import { Divider, Tabs } from '@mantine/core';
 import classes from '../styles/signUp.module.css';
 import SignUpCompany from '../components/signUp/SignUpCompany';
 import SignUpSecurityResearcher from '../components/signUp/SignUpSecurityResearcher';
+import { Link } from 'react-router-dom';
+import SecondaryButton from '../components/buttons/SecondaryButton';
 
 export default function SignUp() {
     return (
-        <div className='flex justify-evenly mt-5'>
+        <div className='flex justify-evenly my-10'>
 
             <div className={`${classes.form} flex flex-col justify-evenly p-3 rounded-lg`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} >
                 <div className='text-2xl font-bold'>مرحباً بك في Bug Bounty</div>
@@ -33,6 +35,14 @@ export default function SignUp() {
                         <SignUpSecurityResearcher />
                     </Tabs.Panel>
                 </Tabs>
+
+                <Divider my="xs" label={<span style={{ color: 'black', fontWeight: '900' }}>أو</span>} labelPosition="center" color='black' />
+
+                <div className='flex justify-center'>
+                    <Link to={'/login'}>
+                        <SecondaryButton title='تسجيل الدخول' />
+                    </Link>
+                </div>
 
             </div>
 

@@ -1,6 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import PrimaryButton from './buttons/PrimaryButton';
 import SecondaryButton from './buttons/SecondaryButton';
+import Footer from './Footer';
 
 
 export default function Header() {
@@ -35,12 +36,17 @@ export default function Header() {
                     <Link to={'/signup'}>
                         <PrimaryButton title='سجّل مجاناً' />
                     </Link>
-                    <SecondaryButton title='دخول' />
+
+                    <Link to={'/login'}>
+                        <SecondaryButton title='دخول' />
+                    </Link>
                 </div>
 
             </div>
 
             <Outlet />
+
+            <Footer />
         </>
     )
 }

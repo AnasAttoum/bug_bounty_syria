@@ -39,7 +39,7 @@ export default function Company() {
 
     return (
         <>
-            <div className="flex flex-col gap-y-5 py-5 px-10 page" style={{ backgroundImage: 'url(/background.svg)' }}>
+            <div className="flex flex-col gap-y-5 py-5 px-10 page" style={{ backgroundImage: 'url(/background.svg)',backgroundRepeat:'no-repeat' }}>
 
                 <div className={`${styles.container} flex justify-between gap-5 mb-10`}>
 

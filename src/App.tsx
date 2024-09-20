@@ -4,7 +4,9 @@ import SignUp from "./pages/SignUp"
 import LogIn from "./pages/LogIn"
 import Main from "./pages/Main"
 import Company from "./pages/Company"
-import Profile from "./pages/Profile"
+import ProfileHeader from "./components/ProfileHeader"
+import Profile from "./pages/Profile/Profile"
+import ProfileSecurity from "./pages/Profile/ProfileSecurity"
 
 function App() {
 
@@ -13,11 +15,16 @@ function App() {
       <Routes>
         <Route path="/" element={<Header />}>
 
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<LogIn />} />
+          <Route path="signup" element={<SignUp />} />
+          <Route path="login" element={<LogIn />} />
           <Route index element={<Main />} />
           <Route path="company/:id" element={<Company />} />
-          <Route path="profile" element={<Profile />} />
+
+          <Route path="profile" element={<ProfileHeader />} >
+            <Route index element={<Profile />} />
+            <Route path="security" element={<ProfileSecurity />} />
+
+          </Route>
 
         </Route>
       </Routes>

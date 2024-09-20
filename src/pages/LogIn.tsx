@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Divider, Input, PasswordInput } from '@mantine/core';
 
-import styles from '../styles/signUp.module.css';
+import styles from '../styles/signUp.module.css'
 import SecondaryButton from '../components/buttons/SecondaryButton';
 import { useEffect, useState } from 'react';
 import { IconMail } from '@tabler/icons-react';
@@ -62,9 +62,9 @@ export default function LogIn() {
     }
 
     return (
-        <div className='flex justify-evenly my-10'>
+        <div className='flex justify-center items-center py-10' style={{ backgroundImage: 'url(/background.svg)',backgroundRepeat:'no-repeat',minHeight:'calc(100vh - 200px)' }}>
 
-            <div className={`${styles.form} flex flex-col justify-center gap-7 p-3 rounded-lg`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} >
+            <div className={`${styles.logIn} flex flex-col justify-center gap-7 h-fit p-3 bg-white rounded-lg`} style={{ width: '40vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} >
                 <div>
                     <div className='text-2xl font-bold'>مرحباً بك في Bug Bounty</div>
                     <div className='text-gray-500 font-bold mt-1 mb-2'>يرجى التسجيل للمتابعة</div>
@@ -72,11 +72,11 @@ export default function LogIn() {
 
                 <div className='flex flex-col justify-around gap-5'>
 
-                    <div className='flex flex-wrap justify-start px-2 gap-y-5 gap-x-3'>
-                        <Input.Wrapper error={warning.email} className={styles.input}>
+                    <div className='flex flex-col flex-wrap justify-start px-2 gap-y-5 gap-x-3'>
+                        <Input.Wrapper error={warning.email} style={{width:'100%'}}>
                             <Input placeholder="أدخل البريد الإلكتروني" rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
                         </Input.Wrapper>
-                        <Input.Wrapper error={warning.password} className={styles.input}>
+                        <Input.Wrapper error={warning.password} style={{width:'100%'}}>
                             <PasswordInput placeholder="أدخل كلمة المرور" name='password' onChange={handleChange} />
                         </Input.Wrapper>
                     </div>
@@ -99,7 +99,6 @@ export default function LogIn() {
 
             </div>
 
-            <img src="/images/intro.png" alt="Intro Image" className={styles.img} style={{ height: '80vh' }} />
         </div>
     )
 }

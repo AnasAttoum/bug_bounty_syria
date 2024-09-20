@@ -5,4 +5,5 @@
     padding: 50px;
     background-color: var(--primary);
     color: #fff;
+    width: 100vw;
 }

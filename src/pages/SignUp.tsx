@@ -1,5 +1,5 @@
 import { Divider, Tabs } from '@mantine/core';
-import classes from '../styles/signUp.module.css';
+import styles from '../styles/signUp.module.css';
 import SignUpCompany from '../components/signUp/SignUpCompany';
 import SignUpSecurityResearcher from '../components/signUp/SignUpSecurityResearcher';
 import { Link } from 'react-router-dom';
@@ -22,11 +22,11 @@ export default function SignUp() {
     return (
         <div className='flex justify-evenly my-10'>
 
-            <div className={`${classes.form} flex flex-col justify-evenly p-3 rounded-lg`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} >
+            <div className={`${styles.form} flex flex-col justify-evenly p-3 rounded-lg`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} >
                 <div className='text-2xl font-bold'>مرحباً بك في Bug Bounty</div>
                 <div className='text-gray-500 font-bold mt-1 mb-2'>يرجى التسجيل للمتابعة</div>
 
-                <Tabs variant="unstyled" defaultValue="SecurityResearcher" classNames={classes}>
+                <Tabs variant="unstyled" defaultValue="SecurityResearcher" classNames={styles}>
                     <Tabs.List grow>
                         <Tabs.Tab
                             value="company"
@@ -59,7 +59,7 @@ export default function SignUp() {
 
             </div>
 
-            <img src="/images/intro.png" alt="Intro Image" className={classes.img} style={{ height: '80vh' }} />
+            <img src="/images/intro.png" alt="Intro Image" className={styles.img} style={{ height: '80vh' }} />
         </div>
     )
 }

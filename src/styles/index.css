@@ -11,6 +11,7 @@
     --black:#1D1D1B;
 }
 
+
 body {
     font-family: "Cairo", sans-serif !important;
     font-optical-sizing: auto;
@@ -19,6 +20,9 @@ body {
     font-variation-settings:"slnt" 0;
 
     color: var(--black) !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 

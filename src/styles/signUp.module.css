@@ -77,6 +77,12 @@
   }
 }
 
+@media (width<900px) {
+  .logIn{
+    width: 90vw !important;
+  }
+}
+
 @media (width<694px) {
   .input{
     width: 100%;

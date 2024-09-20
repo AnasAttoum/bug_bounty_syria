@@ -7,7 +7,8 @@
 
 :root {
     --primary: #B21222;
-    --secondary: rgba(178, 18, 34, 0.50)
+    --secondary: rgba(178, 18, 34, 0.50);
+    --black:#1D1D1B;
 }
 
 body {
@@ -16,4 +17,13 @@ body {
     font-weight: 500;
     font-style: normal;
     font-variation-settings:"slnt" 0;
+
+    color: var(--black) !important;
+}
+
+
+@media (width<500px) {
+    .page{
+        padding-inline: 2% !important;
+    }
 }

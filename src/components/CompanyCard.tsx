@@ -3,7 +3,7 @@ import { useState } from 'react';
 import SecondaryButton from './buttons/SecondaryButton';
 import { company } from '../lib/slices/companySlice';
 
-import styles from '../styles/CompanyCard.module.css'
+import styles from '../styles/companyCard.module.css'
 import { Link } from 'react-router-dom';
 
 export default function CompanyCard({ company: { id, image, name, link, description, people, type } }: { company: company }) {
@@ -29,7 +29,7 @@ export default function CompanyCard({ company: { id, image, name, link, descript
       <a href={link.trim().startsWith('www.') ? `https://${link.trim()}` : link} target='_blank' rel="noopener noreferrer">
         <div className='flex gap-1 px-3'>
           <IconWorld />
-          <div>www.adobe.com</div>
+          <div>{link}</div>
           <IconExternalLink style={{ transform: 'rotateY(180deg)' }} />
         </div>
       </a>

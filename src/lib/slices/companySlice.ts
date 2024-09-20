@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface company {
-    id: number,
+    id?: number,
     image: string,
     name: string,
     link: string,

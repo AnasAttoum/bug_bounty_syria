@@ -1,13 +1,24 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Divider, Input, PasswordInput } from '@mantine/core';
 
 import styles from '../styles/signUp.module.css';
 import SecondaryButton from '../components/buttons/SecondaryButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconMail } from '@tabler/icons-react';
 import PrimaryButton from '../components/buttons/PrimaryButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../lib/slices/userSlice';
+import { RootState } from '../lib/store';
 
 export default function LogIn() {
+
+    const {isLogged}=useSelector((state:RootState)=>state.reducers.user)
+    const navigate = useNavigate()
+
+    useEffect(()=>{
+        if(isLogged)
+            navigate('/')
+    },[isLogged,navigate])
 
     const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -19,6 +30,8 @@ export default function LogIn() {
         email: '',
         password: '',
     });
+
+    const dispatch = useDispatch()
 
     const handleChange = (e: { target: { value: string; name: string; }; }) => {
         const { value, name } = e.target
@@ -43,6 +56,8 @@ export default function LogIn() {
                 email: '',
                 password: '',
             })
+
+            dispatch(login())
         }
     }
 

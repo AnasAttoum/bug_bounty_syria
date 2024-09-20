@@ -5,6 +5,7 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist
 import { persistStore } from 'redux-persist';
 
 import companySlice from './slices/companySlice';
+import userSlice from './slices/userSlice';
 
 const authPersistConfig = {
     key: "bug_bounty_syria",
@@ -13,6 +14,7 @@ const authPersistConfig = {
 };
 const reducers = persistReducer(authPersistConfig, combineReducers({
     company: companySlice,
+    user: userSlice,
 }));
 export const makeStore = configureStore({
     reducer: {

@@ -4,6 +4,7 @@ import SignUp from "./pages/SignUp"
 import LogIn from "./pages/LogIn"
 import Main from "./pages/Main"
 import Company from "./pages/Company"
+import Profile from "./pages/Profile"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LogIn />} />
           <Route index element={<Main />} />
           <Route path="company/:id" element={<Company />} />
+          <Route path="profile" element={<Profile />} />
 
         </Route>
       </Routes>

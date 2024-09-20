@@ -29,6 +29,7 @@ export default function SignUpSecurityResearcher() {
 
   const terms = useRef<boolean>(true)
 
+
   const handleChange = (e: { target: { value: string; name: string; }; }) => {
     const { value, name } = e.target
     setData(prev => ({ ...prev, [name]: value }))

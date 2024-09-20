@@ -1,10 +1,18 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import PrimaryButton from './buttons/PrimaryButton';
 import SecondaryButton from './buttons/SecondaryButton';
 import Footer from './Footer';
+import { useSelector } from 'react-redux';
+import { RootState } from '../lib/store';
+import { Avatar } from '@mantine/core'
+import { IconBell } from '@tabler/icons-react';;
 
 
 export default function Header() {
+
+    const { isLogged } = useSelector((state: RootState) => state.reducers.user)
+    const navigate=useNavigate()
+
     return (
         <>
             <div className="flex justify-between px-10 py-5 page" style={{ boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }}>
@@ -32,15 +40,22 @@ export default function Header() {
                     <path d="M114.429 5.69156C114.437 5.73752 114.433 5.78464 114.419 5.82899C114.405 5.87335 114.381 5.91367 114.348 5.94661C114.315 5.97956 114.275 6.00417 114.232 6.0184C114.188 6.03264 114.141 6.0361 114.096 6.02848H104.445C104.35 6.01869 104.255 6.03193 104.166 6.06709C104.077 6.10225 103.998 6.15832 103.935 6.23063L102.758 7.35273C102.685 7.43256 102.645 7.53728 102.646 7.6457V14.9481C102.643 15.0195 102.656 15.0906 102.683 15.1566C102.71 15.2226 102.751 15.2819 102.803 15.3304L104.252 16.7001C104.296 16.7444 104.348 16.7793 104.405 16.8025C104.463 16.8256 104.524 16.8367 104.586 16.8348H111.234C111.479 16.8348 111.591 16.7001 111.591 16.4086V10.9021C111.591 10.656 111.701 10.5432 111.924 10.5432H114.645C114.89 10.5432 115.002 10.656 115.002 10.9021V18.5194C115.002 18.9677 114.778 19.1933 114.357 19.1933H102.178C101.974 19.1987 101.776 19.1265 101.623 18.9911L98.6206 16.1376C98.555 16.0736 98.5034 15.9966 98.4689 15.9113C98.4345 15.8261 98.418 15.7345 98.4206 15.6424V6.49871C98.418 6.40688 98.4345 6.31553 98.469 6.23051C98.5034 6.1455 98.5551 6.0687 98.6206 6.00505L100.778 3.91467C100.853 3.83654 100.943 3.7745 101.043 3.73223C101.143 3.68996 101.25 3.66831 101.358 3.66857H114.097C114.319 3.66857 114.43 3.77991 114.43 4.02747L114.429 5.69156Z" fill="#CC0A26" />
                 </svg>
 
-                <div className='flex gap-3'>
-                    <Link to={'/signup'}>
-                        <PrimaryButton title='سجّل مجاناً' />
-                    </Link>
+                {isLogged ?
+                    <div className='flex items-center gap-3'>
+                        <IconBell color='var(--primary)' stroke={1.5}/>
+                        <Avatar color="red" radius="xl" name='Anas Attoum' style={{ outline: '2px solid var(--primary)', outlineOffset: '3px',cursor:'pointer' }} onClick={()=>navigate('/profile')} />
+                    </div>
+                    :
+                    <div className='flex gap-3'>
+                        <Link to={'/signup'}>
+                            <PrimaryButton title='سجّل مجاناً' />
+                        </Link>
 
-                    <Link to={'/login'}>
-                        <SecondaryButton title='دخول' />
-                    </Link>
-                </div>
+                        <Link to={'/login'}>
+                            <SecondaryButton title='دخول' />
+                        </Link>
+                    </div>
+                }
 
             </div>
 

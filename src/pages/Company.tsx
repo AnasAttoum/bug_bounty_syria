@@ -10,6 +10,7 @@ import styles from '../styles/company.module.css'
 import CompanyCard from "../components/CompanyCard"
 import { useDisclosure } from "@mantine/hooks"
 import ModalReport from "../components/ModalReport"
+import { useInView } from "react-intersection-observer"
 
 export default function Company() {
 
@@ -27,6 +28,12 @@ export default function Company() {
         type: '',
     })
     const { image, name, link, description, people, type } = company
+    const { ref: cards, inView: cardsInView, entry: cardsEntry } = useInView()
+    const { ref: img, inView: imgInView, entry: imgEntry } = useInView()
+    useEffect(() => {
+        if (imgInView)
+            imgEntry?.target.classList.add('toBottomAnimation')
+    }, [imgInView, imgEntry])
 
     useEffect(() => {
         let x = { image: '', name: '', link: '', description: '', people: '', type: '' }
@@ -35,11 +42,25 @@ export default function Company() {
         setCompany(x)
     }, [companies, id])
 
+    useEffect(() => {
+        if (cardsInView)
+            cardsEntry?.target.childNodes.forEach((el, index) => {
+                (el as HTMLElement).style.animation = `animation 1s ${index / 2}s forwards`
+            })
+    }, [cardsInView, cardsEntry])
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'instant'
+        })
+    }, [])
+
     const [opened, { open, close }] = useDisclosure(false);
 
     return (
         <>
-            <div className="flex flex-col gap-y-5 py-5 px-10 page" style={{ backgroundImage: 'url(/background.svg)',backgroundRepeat:'no-repeat' }}>
+            <div className="flex flex-col gap-y-5 py-5 px-10 page" style={{ backgroundImage: 'url(/background.svg)', backgroundRepeat: 'no-repeat' }}>
 
                 <div className={`${styles.container} flex justify-between gap-5 mb-10`}>
 
@@ -77,14 +98,14 @@ export default function Company() {
 
                     </div>
 
-                    <img src="/images/companies/image.png" alt="image" style={{ width: '45vw' }} />
+                    <img src="/images/companies/image.png" alt="image" style={{ width: '45vw', opacity: '0' }} ref={img} />
 
 
                 </div>
 
                 <div className="font-extrabold">شركات مقترحة</div>
 
-                <div className='flex flex-wrap justify-evenly gap-5 mb-10'>
+                <div className='flex flex-wrap justify-evenly gap-5 mb-10' ref={cards}>
                     {companies.slice(0, 4).map((company, index) => {
                         return <CompanyCard key={index} company={company} />
                     })}

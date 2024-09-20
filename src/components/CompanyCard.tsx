@@ -11,7 +11,7 @@ export default function CompanyCard({ company: { id, image, name, link, descript
   const [save, setSave] = useState<boolean>(false)
 
   return (
-    <div className={`${styles.card} flex flex-col justify-between gap-3 p-5 bg-white rounded-lg`} style={{ boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px', width: '300px' }}>
+    <div className={`${styles.card} flex flex-col justify-between gap-3 p-5 bg-white rounded-lg opacity-0`} style={{ boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px', width: '300px' }}>
 
       <div className='flex justify-between items-center'>
 

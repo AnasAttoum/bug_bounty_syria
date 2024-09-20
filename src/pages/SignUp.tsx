@@ -8,21 +8,31 @@ import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { RootState } from '../lib/store';
 import { useNavigate } from "react-router-dom"
+import { useInView } from 'react-intersection-observer';
 
 export default function SignUp() {
 
-    const {isLogged}=useSelector((state:RootState)=>state.reducers.user)
+    const { isLogged } = useSelector((state: RootState) => state.reducers.user)
     const navigate = useNavigate()
+    const { ref: signUp, inView: signUpInView, entry: signUpEntry } = useInView()
+    const { ref: signUpImg, inView: signUpImgInView, entry: signUpImgEntry } = useInView()
 
-    useEffect(()=>{
-        if(isLogged)
+    useEffect(() => {
+        if (isLogged)
             navigate('/')
-    },[isLogged,navigate])
+    }, [isLogged, navigate])
+
+    useEffect(() => {
+        if (signUpInView)
+            signUpEntry?.target.classList.add('toBottomAnimation')
+        if (signUpImgInView && signUpImgEntry)
+            signUpImgEntry?.target.classList.add('toTopAnimation')
+    }, [signUpInView, signUpEntry, signUpImgInView, signUpImgEntry])
 
     return (
         <div className='flex justify-evenly my-10'>
 
-            <div className={`${styles.form} flex flex-col justify-evenly p-3 rounded-lg`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} >
+            <div className={`${styles.form} flex flex-col justify-evenly p-3 rounded-lg opacity-0`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} ref={signUp}>
                 <div className='text-2xl font-bold'>مرحباً بك في Bug Bounty</div>
                 <div className='text-gray-500 font-bold mt-1 mb-2'>يرجى التسجيل للمتابعة</div>
 
@@ -59,7 +69,7 @@ export default function SignUp() {
 
             </div>
 
-            <img src="/images/intro.png" alt="Intro Image" className={styles.img} style={{ height: '80vh' }} />
+            <img src="/images/intro.png" alt="Intro Image" className={`${styles.img} opacity-0`} style={{ height: '80vh' }} ref={signUpImg} />
         </div>
     )
 }

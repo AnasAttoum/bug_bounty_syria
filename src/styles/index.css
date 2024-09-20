@@ -8,7 +8,7 @@
 :root {
     --primary: #B21222;
     --secondary: rgba(178, 18, 34, 0.50);
-    --black:#1D1D1B;
+    --black: #1D1D1B;
 }
 
 
@@ -17,7 +17,7 @@ body {
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
-    font-variation-settings:"slnt" 0;
+    font-variation-settings: "slnt" 0;
 
     color: var(--black) !important;
     display: flex;
@@ -27,7 +27,29 @@ body {
 
 
 @media (width<500px) {
-    .page{
+    .page {
         padding-inline: 2% !important;
+    }
+}
+
+
+
+
+/* animation */
+
+.toBottomAnimation {
+    transform: translateY(-50px);
+    animation: animation 1s forwards;
+}
+
+.toTopAnimation {
+    transform: translateY(50px);
+    animation: animation 1s .5s forwards;
+}
+
+@keyframes animation {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

@@ -9,16 +9,23 @@ import PrimaryButton from '../components/buttons/PrimaryButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../lib/slices/userSlice';
 import { RootState } from '../lib/store';
+import { useInView } from 'react-intersection-observer';
 
 export default function LogIn() {
 
     const {isLogged}=useSelector((state:RootState)=>state.reducers.user)
     const navigate = useNavigate()
+    const {ref:logIn , inView:logInInView , entry:logInEntry} = useInView()
 
     useEffect(()=>{
         if(isLogged)
             navigate('/')
     },[isLogged,navigate])
+
+    useEffect(()=>{
+        if(logInInView)
+            logInEntry?.target.classList.add('toBottomAnimation')
+    },[logInInView,logInEntry])
 
     const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -64,7 +71,7 @@ export default function LogIn() {
     return (
         <div className='flex justify-center items-center py-10' style={{ backgroundImage: 'url(/background.svg)',backgroundRepeat:'no-repeat',minHeight:'calc(100vh - 200px)' }}>
 
-            <div className={`${styles.logIn} flex flex-col justify-center gap-7 h-fit p-3 bg-white rounded-lg`} style={{ width: '40vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} >
+            <div className={`${styles.logIn} flex flex-col justify-center gap-7 h-fit p-3 bg-white rounded-lg opacity-0`} style={{ width: '40vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} ref={logIn}>
                 <div>
                     <div className='text-2xl font-bold'>مرحباً بك في Bug Bounty</div>
                     <div className='text-gray-500 font-bold mt-1 mb-2'>يرجى التسجيل للمتابعة</div>

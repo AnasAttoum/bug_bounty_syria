@@ -1,0 +1,74 @@
+.svg {
+    animation: logo 4s infinite forwards;
+}
+
+@keyframes logo {
+    0% {
+        transform: translateY(-20px);
+    }
+
+    50% {
+        transform: translateY(0px);
+    }
+
+    100% {
+        transform: translateY(-20px);
+    }
+}
+
+.loader {
+    width: 52px;
+    height: 12px;
+    --c: radial-gradient(farthest-side, var(--primary) 90%, #0000);
+    background:
+        var(--c) left,
+        var(--c) right;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    display: flex;
+}
+
+.loader:before {
+    content: "";
+    flex: 1;
+    background: inherit;
+    animation: d10 2s infinite;
+}
+
+@keyframes d10 {
+    0% {
+        transform: translate(20px) rotate(0)
+    }
+
+    16.67% {
+        transform: translate(20px) rotate(90deg)
+    }
+
+    33.33% {
+        transform: translate(-20px) rotate(90deg)
+    }
+
+    50% {
+        transform: translate(-20px) rotate(180deg)
+    }
+
+    66.67% {
+        transform: translate(-20px) rotate(270deg)
+    }
+
+    83.33% {
+        transform: translate(20px) rotate(270deg)
+    }
+
+    100% {
+        transform: translate(20px) rotate(360deg)
+    }
+}
+
+
+@media (width<375px) {
+    .svg {
+        width: 10em !important;
+        height: 10em !important;
+    }
+}

@@ -14,6 +14,7 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
 import 'flag-icon-css/css/flag-icons.min.css'
+import Loading from './pages/Loading.tsx'
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
@@ -44,7 +45,7 @@ const theme = createTheme({
 });
 
 createRoot(document.getElementById('root')!).render(
-  <Suspense fallback={<h1>Loading...</h1>}>
+  <Suspense fallback={<Loading />}>
     <StrictMode>
       <MantineProvider theme={theme}>
         <StoreProvider>

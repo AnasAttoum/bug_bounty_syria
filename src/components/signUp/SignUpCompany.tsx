@@ -6,16 +6,17 @@ import { Checkbox } from '@mantine/core';
 
 import styles from '../../styles/signUp.module.css'
 import PrimaryButton from '../buttons/PrimaryButton';
+import { useTranslation } from 'react-i18next';
+import { validateCompanySchema } from '../../validations/validations';
 
 export default function SignUpCompany() {
-  const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const [data, setData] = useState({
     signUpType: 0,
     domain: '',
     name: '',
-    type: 'شركة حكومية',
-    employeesNumber: '',
+    type: '0',
+    employeesNumber: '0',
     email: '',
     password: '',
   });
@@ -30,60 +31,47 @@ export default function SignUpCompany() {
   });
 
   const terms = useRef<boolean>(true)
+  const { t } = useTranslation()
 
   const handleChange = (e: { target: { value: string; name: string; }; }) => {
     const { value, name } = e.target
     setData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (terms.current === false)
-      setWarning(prev => ({ ...prev, terms: 'الرجاء الموافقة على  سياسة الخصوصية وشروط الخدمة' }))
-    else
+      setWarning(prev => ({ ...prev, terms: t('invalidTerms') }))
+    else {
       setWarning(prev => ({ ...prev, terms: '' }))
 
-    if (data.domain === '')
-      setWarning(prev => ({ ...prev, domain: 'دومين خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, domain: '' }))
-
-    if (data.name === '')
-      setWarning(prev => ({ ...prev, name: 'اسم الشركة خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, name: '' }))
-
-    if (data.type === '')
-      setWarning(prev => ({ ...prev, type: 'الرجاء اختيار نوع الشركة' }))
-    else
-      setWarning(prev => ({ ...prev, type: '' }))
-
-    if (data.employeesNumber === '' || isNaN(parseInt(data.employeesNumber)))
-      setWarning(prev => ({ ...prev, employeesNumber: 'إدخال خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, employeesNumber: '' }))
-
-    if (data.email === '' || !regEmail.test(data.email))
-      setWarning(prev => ({ ...prev, email: 'البريد الإلكتروني خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, email: '' }))
-
-    if (data.password.length < 6)
-      setWarning(prev => ({ ...prev, password: 'كلمة السر يجب أن تكون أكثر من 6 محارف' }))
-    else
-      setWarning(prev => ({ ...prev, password: '' }))
-
-    if (data.domain !== '' && data.name !== '' && data.type !== '' && data.employeesNumber !== '' && !isNaN(parseInt(data.employeesNumber)) && data.email !== '' && regEmail.test(data.email) && data.password.length >= 6 && terms.current === true) {
-      console.log(data)
-
-      setWarning({
-        domain: '',
-        name: '',
-        type: '',
-        employeesNumber: '',
-        email: '',
-        password: '',
-        terms: ''
-      })
+      try {
+        await validateCompanySchema.validate({...data,emplyeesNumber:parseInt(data.employeesNumber)}, { abortEarly: false })
+        console.log(data)
+        setWarning({
+          domain: '',
+          name: '',
+          type: '',
+          employeesNumber: '',
+          email: '',
+          password: '',
+          terms: ''
+        })
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      catch (error: any) {
+        setWarning({
+          domain: '',
+          name: '',
+          type: '',
+          employeesNumber: '',
+          email: '',
+          password: '',
+          terms: ''
+        })
+        error.inner.forEach(({ message, path }: { message: string, path: string }) => {
+          setWarning(prev => ({ ...prev, [path]: t(message) }))
+        })
+      }
     }
   }
 
@@ -92,33 +80,33 @@ export default function SignUpCompany() {
 
       <div className='flex flex-wrap justify-start px-2 gap-y-5 gap-x-3'>
         <Input.Wrapper error={warning.domain} className={styles.input}>
-          <Input placeholder="أدخل دومين الشركة" rightSection={<IconWorld size={16} />} name='domain' onChange={handleChange} />
+          <Input placeholder={t('enterDomain')} rightSection={<IconWorld size={16} />} name='domain' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.name} className={styles.input}>
-          <Input placeholder="أدخل اسم الشركة" rightSection={<IconUser size={16} />} name='name' onChange={handleChange} />
+          <Input placeholder={t('enterCompanyName')} rightSection={<IconUser size={16} />} name='name' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.type} className={styles.input}>
-          <NativeSelect data={['شركة حكومية', 'شركة خاصة']} name='type' onChange={handleChange} />
+          <NativeSelect data={[{ label: t('governmentCompany'), value: 'government' }, { label: t('privateCompany'), value: 'private' }]} name='type' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.employeesNumber} className={styles.input}>
-          <Input placeholder="أدخل عدد موظفين الشركة" rightSection={<IconUsers size={16} />} name='employeesNumber' onChange={handleChange} />
+          <Input placeholder={t('enterEmployeeNum')} rightSection={<IconUsers size={16} />} name='employeesNumber' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.email} className={styles.input}>
-          <Input placeholder="أدخل البريد الإلكتروني للشركة" rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
+          <Input placeholder={t('enterEmail')} rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
         </Input.Wrapper>
-        
+
         <Input.Wrapper error={warning.password} className={styles.input}>
-          <PasswordInput placeholder="أدخل كلمة المرور" name='password' onChange={handleChange} />
+          <PasswordInput placeholder={t('enterPassword')} name='password' onChange={handleChange} />
         </Input.Wrapper>
       </div>
 
       <Checkbox
         defaultChecked
-        label=" الموافقة على سياسة الخصوصية وشروط الخدمة."
+        label={t('terms')}
         color='var(--primary)'
         onChange={(e) => { terms.current = e.currentTarget.checked }}
       />
@@ -127,7 +115,7 @@ export default function SignUpCompany() {
 
       <div className='flex justify-center'>
         <div onClick={handleCreate}>
-          <PrimaryButton title='إنشاء حساب' />
+          <PrimaryButton title={t('signUp')} />
         </div>
       </div>
 

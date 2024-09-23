@@ -10,12 +10,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../lib/slices/userSlice';
 import { RootState } from '../lib/store';
 import { useInView } from 'react-intersection-observer';
+import { useTranslation } from 'react-i18next';
+import { validateLogInSchema } from '../validations/validations';
 
 export default function LogIn() {
 
     const {isLogged}=useSelector((state:RootState)=>state.reducers.user)
     const navigate = useNavigate()
     const {ref:logIn , inView:logInInView , entry:logInEntry} = useInView()
+    const { t } = useTranslation()
 
     useEffect(()=>{
         if(isLogged)
@@ -26,8 +29,6 @@ export default function LogIn() {
         if(logInInView)
             logInEntry?.target.classList.add('toBottomAnimation')
     },[logInInView,logInEntry])
-
-    const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     const [data, setData] = useState({
         email: '',
@@ -45,26 +46,26 @@ export default function LogIn() {
         setData(prev => ({ ...prev, [name]: value }))
     }
 
-    const handleSignIn = () => {
-        if (data.email === '' || !regEmail.test(data.email))
-            setWarning(prev => ({ ...prev, email: 'البريد الإلكتروني غير صالح' }))
-        else
-            setWarning(prev => ({ ...prev, email: '' }))
-
-        if (data.password === '')
-            setWarning(prev => ({ ...prev, password: 'يرجى التأكد من كلمة السر' }))
-        else
-            setWarning(prev => ({ ...prev, password: '' }))
-
-        if (data.email !== '' && regEmail.test(data.email) && data.password !== '') {
+    const handleSignIn = async() => {
+        try {
+            await validateLogInSchema.validate(data, { abortEarly: false })
             console.log(data)
-
             setWarning({
                 email: '',
                 password: '',
             })
-
             dispatch(login())
+          }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          catch (error: any) {
+            setWarning({
+                email: '',
+                password: '',
+            })
+            error.inner.forEach(({ message, path }: { message: string, path: string }) => {
+              setWarning(prev => ({ ...prev, [path]: t(message) }))
+            })
+
         }
     }
 
@@ -73,25 +74,25 @@ export default function LogIn() {
 
             <div className={`${styles.logIn} flex flex-col justify-center gap-7 h-fit p-3 bg-white rounded-lg opacity-0`} style={{ width: '40vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} ref={logIn}>
                 <div>
-                    <div className='text-2xl font-bold'>مرحباً بك في Bug Bounty</div>
-                    <div className='text-gray-500 font-bold mt-1 mb-2'>يرجى التسجيل للمتابعة</div>
+                    <div className='text-2xl font-bold'>{t('welcome')}</div>
+                    <div className='text-gray-500 font-bold mt-1 mb-2'>{t('continue')}</div>
                 </div>
 
                 <div className='flex flex-col justify-around gap-5'>
 
                     <div className='flex flex-col flex-wrap justify-start px-2 gap-y-5 gap-x-3'>
                         <Input.Wrapper error={warning.email} style={{width:'100%'}}>
-                            <Input placeholder="أدخل البريد الإلكتروني" rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
+                            <Input placeholder={t('enterEmail')} rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
                         </Input.Wrapper>
                         <Input.Wrapper error={warning.password} style={{width:'100%'}}>
-                            <PasswordInput placeholder="أدخل كلمة المرور" name='password' onChange={handleChange} />
+                            <PasswordInput placeholder={t('enterPassword')} name='password' onChange={handleChange} />
                         </Input.Wrapper>
                     </div>
                 </div>
 
                 <div className='flex justify-center'>
                     <div onClick={handleSignIn}>
-                        <PrimaryButton title='تسجيل الدخول' />
+                        <PrimaryButton title={t('logIn')} />
                     </div>
                 </div>
 
@@ -100,7 +101,7 @@ export default function LogIn() {
 
                 <div className='flex justify-center'>
                     <Link to={'/signup'}>
-                        <SecondaryButton title='إنشاء حساب جديد' />
+                        <SecondaryButton title={t('signUp')} />
                     </Link>
                 </div>
 

@@ -6,12 +6,13 @@ import { Checkbox } from '@mantine/core';
 
 import styles from '../../styles/signUp.module.css'
 import PrimaryButton from '../buttons/PrimaryButton';
+import { useTranslation } from 'react-i18next';
+import { validateSecurityResearcherSchema } from '../../validations/validations';
 
 export default function SignUpSecurityResearcher() {
 
-  const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
   const [data, setData] = useState({
+    signUpType: 1,
     name: '',
     email: '',
     phone: '',
@@ -28,6 +29,7 @@ export default function SignUpSecurityResearcher() {
   });
 
   const terms = useRef<boolean>(true)
+  const { t } = useTranslation()
 
 
   const handleChange = (e: { target: { value: string; name: string; }; }) => {
@@ -35,49 +37,42 @@ export default function SignUpSecurityResearcher() {
     setData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (terms.current === false)
-      setWarning(prev => ({ ...prev, terms: 'الرجاء الموافقة على  سياسة الخصوصية وشروط الخدمة' }))
-    else
+      setWarning(prev => ({ ...prev, terms: t('invalidTerms') }))
+    else {
       setWarning(prev => ({ ...prev, terms: '' }))
 
-    if (data.name === '')
-      setWarning(prev => ({ ...prev, name: 'اسم الشركة خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, name: '' }))
-
-    if (data.email === '' || !regEmail.test(data.email))
-      setWarning(prev => ({ ...prev, email: 'البريد الإلكتروني خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, email: '' }))
-
-    if (data.phone === '' || isNaN(parseInt(data.phone)) || data.phone.length <= 9)
-      setWarning(prev => ({ ...prev, phone: 'الرقم خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, phone: '' }))
-
-    if (data.password.length < 6)
-      setWarning(prev => ({ ...prev, password: 'كلمة السر يجب أن تكون أكثر من 5 محارف' }))
-    else
-      setWarning(prev => ({ ...prev, password: '' }))
-
-    if (data.code === '')
-      setWarning(prev => ({ ...prev, code: 'إدخال خاطئ' }))
-    else
-      setWarning(prev => ({ ...prev, code: '' }))
-
-    if (data.name !== '' && data.email !== '' && regEmail.test(data.email) && data.phone !== '' && isNaN(parseInt(data.phone)) && data.phone.length > 9 && data.password.length >= 6 && data.code !== '' && terms.current === true) {
-      console.log(data)
-
-      setWarning({
-        name: '',
-        email: '',
-        phone: '',
-        password: '',
-        code: '',
-        terms: ''
-      })
+      try {
+        await validateSecurityResearcherSchema.validate(data, { abortEarly: false })
+        console.log(data)
+        setWarning({
+          name: '',
+          email: '',
+          phone: '',
+          password: '',
+          code: '',
+          terms: ''
+        })
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      catch (error: any) {
+        setWarning({
+          name: '',
+          email: '',
+          phone: '',
+          password: '',
+          code: '',
+          terms: ''
+        })
+        error.inner.forEach(({ message, path }: { message: string, path: string }) => {
+          setWarning(prev => ({ ...prev, [path]: t(message) }))
+        })
+      }
     }
+
+
+
   }
 
   return (
@@ -85,29 +80,29 @@ export default function SignUpSecurityResearcher() {
 
       <div className='flex flex-wrap justify-start px-2 gap-y-5 gap-x-3'>
         <Input.Wrapper error={warning.name} className={styles.input}>
-          <Input placeholder="أدخل اسمك الكامل" rightSection={<IconUser size={16} />} name='name' onChange={handleChange} />
+          <Input placeholder={t('enterFullName')} rightSection={<IconUser size={16} />} name='name' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.email} className={styles.input}>
-          <Input placeholder="أدخل البريد الإلكتروني" rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
+          <Input placeholder={t('enterEmail')} rightSection={<IconMail size={16} />} name='email' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.phone} className={styles.input}>
-          <Input placeholder="أدخل رقم الهاتف" rightSection={<IconPhone size={16} />} name='phone' onChange={handleChange} />
+          <Input placeholder={t('enterPhone')} rightSection={<IconPhone size={16} />} name='phone' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.password} className={styles.input}>
-          <PasswordInput placeholder="أدخل كلمة المرور" name='password' onChange={handleChange} />
+          <PasswordInput placeholder={t('enterPassword')} name='password' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.code} className={styles.input}>
-          <Input placeholder="أدخل كود التسجيل" rightSection={<IconCode size={16} />} name='code' onChange={handleChange} />
+          <Input placeholder={t('enterCode')} rightSection={<IconCode size={16} />} name='code' onChange={handleChange} />
         </Input.Wrapper>
       </div>
 
       <Checkbox
         defaultChecked
-        label=" الموافقة على سياسة الخصوصية وشروط الخدمة."
+        label={t('terms')}
         color='var(--primary)'
         onChange={(e) => { terms.current = e.currentTarget.checked }}
       />
@@ -116,7 +111,7 @@ export default function SignUpSecurityResearcher() {
 
       <div className='flex justify-center'>
         <div onClick={handleCreate}>
-          <PrimaryButton title='إنشاء حساب' />
+          <PrimaryButton title={t('signUp')} />
         </div>
       </div>
 

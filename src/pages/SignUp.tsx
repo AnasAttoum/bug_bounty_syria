@@ -17,7 +17,6 @@ export default function SignUp() {
     const navigate = useNavigate()
     const { t } = useTranslation()
     const { ref: signUp, inView: signUpInView, entry: signUpEntry } = useInView()
-    const { ref: signUpImg, inView: signUpImgInView, entry: signUpImgEntry } = useInView()
 
     useEffect(() => {
         if (isLogged)
@@ -27,14 +26,12 @@ export default function SignUp() {
     useEffect(() => {
         if (signUpInView)
             signUpEntry?.target.classList.add('toBottomAnimation')
-        if (signUpImgInView && signUpImgEntry)
-            signUpImgEntry?.target.classList.add('toTopAnimation')
-    }, [signUpInView, signUpEntry, signUpImgInView, signUpImgEntry])
+    }, [signUpInView, signUpEntry])
 
     return (
-        <div className='flex justify-evenly my-10'>
+        <div className='flex justify-center  my-10' style={{ backgroundImage: 'url(/background.svg)', backgroundRepeat: 'no-repeat' }}>
 
-            <div className={`${styles.form} flex flex-col justify-evenly p-3 rounded-lg opacity-0`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} ref={signUp}>
+            <div className={`${styles.form} flex flex-col justify-evenly p-3 rounded-lg opacity-0 bg-white`} style={{ width: '50vw', marginTop: '10px', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} ref={signUp}>
                 <div className='text-2xl font-bold'>{t('welcome')}</div>
                 <div className='text-gray-500 font-bold mt-1 mb-2'>{t('continue')}</div>
 
@@ -71,7 +68,6 @@ export default function SignUp() {
 
             </div>
 
-            <img src="/images/intro.png" alt="Intro Image" className={`${styles.img} opacity-0`} style={{ height: '80vh' }} ref={signUpImg} />
         </div>
     )
 }

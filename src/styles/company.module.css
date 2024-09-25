@@ -35,3 +35,17 @@
     }
 }
 
+@media (width<525px) {
+    .row{
+        font-size: small !important;
+    }
+}
+
+@media (width<400px) {
+    .head{
+        font-size: x-small;
+    }
+    .row{
+        font-size: xx-small !important;
+    }
+}

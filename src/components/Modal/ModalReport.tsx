@@ -2,7 +2,7 @@ import { Button, FileButton, Group, Input, Modal, Text } from '@mantine/core';
 import { useState } from 'react';
 import { IconClipboardText, IconCloudUpload } from '@tabler/icons-react';
 
-import styles from '../styles/company.module.css'
+import styles from '../../styles/company.module.css'
 
 export default function ModalReport({ opened, close }: { opened: boolean, close: () => void }) {
 

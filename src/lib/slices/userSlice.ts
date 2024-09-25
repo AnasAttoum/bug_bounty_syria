@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface securityResearcher {
+    signUpType: 0,
     id?: number,
     name: string,
     email: string,
@@ -12,7 +13,7 @@ export interface securityResearcher {
 const initialState: { isLogged: boolean, securityResearcher: securityResearcher[] } = {
     isLogged: false,
     securityResearcher: [
-        { id: 0, name: 'أنس عتوم', email: 'Anas@gmail.com', phone: '0951931846', password: '0123456789', code: 'C5E4RR7' },
+        { id: 0, name: 'أنس عتوم', email: 'Anas@gmail.com', phone: '0951931846', password: '0123456789', code: 'C5E4RR7',signUpType: 0, },
     ]
 }
 

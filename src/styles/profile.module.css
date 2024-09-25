@@ -1,0 +1,13 @@
+.input {
+  width: 49%;
+  &:focus-within {
+    border-color: var(--primary);
+  }
+}
+
+
+@media (width<1025px) {
+  .input{
+    width: 100%;
+  }
+}

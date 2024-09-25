@@ -4,12 +4,11 @@ import { lazy } from "react"
 import Header from "./components/Header"
 import SignUp from "./pages/SignUp"
 import LogIn from "./pages/LogIn"
-import ProfileHeader from "./components/ProfileHeader"
 
 const LazyMain = lazy(() => import("./pages/Main"))
 const LazyCompany = lazy(() => import("./pages/Company"))
-const LazyProfile = lazy(() => import("./pages/Profile/Profile"))
-const LazyProfileSecurity = lazy(() => import("./pages/Profile/ProfileSecurity"))
+const LazyProfile = lazy(() => import("./pages/Profile"))
+const LazyBugs = lazy(() => import("./pages/Bugs"))
 
 function App() {
 
@@ -22,11 +21,8 @@ function App() {
           <Route path="login" element={<LogIn />} />
           <Route index element={<LazyMain />} />
           <Route path="company/:id" element={<LazyCompany />} />
-
-          <Route path="profile" element={<ProfileHeader />} >
-            <Route index element={<LazyProfile />} />
-            <Route path="security" element={<LazyProfileSecurity />} />
-          </Route>
+          <Route path="bugs" element={<LazyBugs />} />
+          <Route path="profile" element={<LazyProfile />} />
 
         </Route>
       </Routes>

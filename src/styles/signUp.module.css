@@ -2,9 +2,9 @@
   position: relative;
   font-weight: 900;
   font-size: large !important;
-  border-bottom: 1px solid var(--primary) !important;
+  border-bottom: 1px solid #666 !important;
   margin: 10px;
-  border-radius: 10px !important;
+  
 
   &:first-of-type {
     border-radius: 4px 0 0 4px;
@@ -37,8 +37,9 @@
 
   &[data-active] {
     z-index: 1;
-    background-color: var(--secondary);
-    /* border-color: var(--primary); */
+    /* background-color: var(--secondary); */
+    border: 1px solid var(--primary) !important;
+    border-radius: 10px !important;
     color: var(--primary);
 
     @mixin hover {

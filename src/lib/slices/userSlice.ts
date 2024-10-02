@@ -1,16 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from 'axios'
 
-const initialState: { token: string, user: company, SRs: SR[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string } = {
-    token: '',
-    user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
-    SRs: [],
-    loadingCompany: '',
-    loadingSR: '',
-    loadingCode: '',
-    loadingLogIn: '',
-}
-
 const api = axios.create({
     baseURL: import.meta.env.VITE_API,
     // headers: { 'Authorization': `Bearer ${token}` },
@@ -164,6 +154,85 @@ export const homeCompany = createAsyncThunk(
     }
 )
 
+export const reports = createAsyncThunk(
+    'user/reports',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (_, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.get(`/company/all_report`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+
+export const updateCompanyProfile = createAsyncThunk(
+    'user/updateCompanyProfile',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (data: FormData, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.post(`/company/profile`,
+                data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+
+export const updateCompanyPassword = createAsyncThunk(
+    'user/updateCompanyPassword',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (data: FormData, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.post(`/company/changePassword`,
+                data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+
+
+const initialState: { token: string, user: company, SRs: SR[], reports: [], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingCompanyPassword: string } = {
+    token: '',
+    user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
+    SRs: [],
+    reports: [],
+    loadingCompany: '',
+    loadingSR: '',
+    loadingCode: '',
+    loadingLogIn: '',
+    loadingCompanyProfile: '',
+    loadingCompanyPassword: '',
+}
+
 
 export const userSlice = createSlice({
     name: 'user',
@@ -179,6 +248,8 @@ export const userSlice = createSlice({
                 loadingSR: '',
                 loadingCode: '',
                 loadingLogIn: '',
+                loadingCompanyProfile: '',
+                loadingCompanyPassword: '',
             }
         }
     },
@@ -193,7 +264,6 @@ export const userSlice = createSlice({
                 state.loadingCompany = 'rejected'
             })
 
-
             .addCase(registerSR.fulfilled, (state) => {
                 state.loadingSR = 'fulfilled'
             })
@@ -204,8 +274,6 @@ export const userSlice = createSlice({
                 state.loadingSR = 'rejected'
             })
 
-
-
             .addCase(code.fulfilled, (state) => {
                 state.loadingCode = 'fulfilled'
             })
@@ -215,8 +283,6 @@ export const userSlice = createSlice({
             .addCase(code.rejected, (state) => {
                 state.loadingCode = 'rejected'
             })
-
-
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .addCase(logIn.fulfilled, (state, action: PayloadAction<any>) => {
@@ -245,7 +311,6 @@ export const userSlice = createSlice({
                 state.loadingLogIn = 'rejected'
             })
 
-
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .addCase(homeCompany.fulfilled, (state, action: PayloadAction<any>) => {
                 state.SRs = action.payload.data.data.researcher.map((SR: {
@@ -263,6 +328,44 @@ export const userSlice = createSlice({
                     }
                 })
             })
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(reports.fulfilled, (_state, action: PayloadAction<any>) => {
+                console.log(action.payload.data.data)
+            })
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(updateCompanyProfile.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loadingCompanyProfile = 'fulfilled'
+                if (typeof action.payload !== 'string')
+                    state.user = {
+                        ...state.user,
+                        name: action.payload.data.data.name,
+                        email: action.payload.data.data.email,
+                        type: action.payload.data.data.type,
+                        description: action.payload.data.data.description,
+                        image: action.payload.data.data.logo,
+                        domain: action.payload.data.data.domain,
+                        people: action.payload.data.data.employess_count,
+                    }
+            })
+            .addCase(updateCompanyProfile.pending, (state) => {
+                state.loadingCompanyProfile = 'pending'
+            })
+            .addCase(updateCompanyProfile.rejected, (state) => {
+                state.loadingCompanyProfile = 'rejected'
+            })
+
+            .addCase(updateCompanyPassword.fulfilled, (state) => {
+                state.loadingCompanyPassword = 'fulfilled'
+            })
+            .addCase(updateCompanyPassword.pending, (state) => {
+                state.loadingCompanyPassword = 'pending'
+            })
+            .addCase(updateCompanyPassword.rejected, (state) => {
+                state.loadingCompanyPassword = 'rejected'
+            })
+
     },
 })
 

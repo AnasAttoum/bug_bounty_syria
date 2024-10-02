@@ -1,4 +1,4 @@
-import { ActionIcon, Input, NativeSelect, Textarea } from "@mantine/core";
+import { ActionIcon, Avatar, Input, NativeSelect, Textarea } from "@mantine/core";
 import { IconEdit, IconLogout, IconMail, IconUser, IconUsers, IconWorld } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
@@ -10,44 +10,51 @@ import PrimaryButton from "../buttons/PrimaryButton";
 import ModalChangePassword from "../Modal/ModalChangePassword";
 import ModalLogOut from "../Modal/ModalLogOut";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../lib/store";
+import { updateCompanyProfile } from "../../lib/slices/userSlice";
+import LoadingComp from "../LoadingComp";
 
 export default function CompanyProfile() {
+
+    const { user, loadingCompanyProfile } = useSelector((state: RootState) => state.reducers.user)
 
     const [data, setData] = useState({
         domain: '',
         name: '',
-        type: 0,
-        employeesNumber: 0,
+        type: '',
+        employeesNumber: '',
         email: '',
-        password: '',
     });
     const [image, setImage] = useState('')
+    const [file, setFile] = useState<File | undefined>(undefined)
+    const [description, setDescription] = useState('')
     const [warning, setWarning] = useState({
         domain: '',
         name: '',
         type: '',
         employeesNumber: '',
         email: '',
-        password: '',
     });
+    const [error, setError] = useState('')
 
     const [slowTransitionOpened, setSlowTransitionOpened] = useState(false);
     const [slowTransitionOpenedLogOut, setSlowTransitionOpenedLogOut] = useState(false);
     const { t } = useTranslation()
+    const dispatch = useDispatch<AppDispatch>()
 
-    const { image:profileImage, domain, name, type, employeesNumber, email, password } = { image: '/Me.jpg', domain: 'www.darrebni.com', name: 'دربني', type: 0, employeesNumber: 5, email: 'info@darrebni.com', password: '1234567' }
 
     useEffect(() => {
-        setImage(profileImage)
+        setImage(user.image)
+
         setData({
-            domain: domain,
-            name: name,
-            type: type,
-            employeesNumber: employeesNumber,
-            email: email,
-            password: password,
+            domain: user.domain,
+            name: user.name,
+            type: user.type,
+            employeesNumber: user.people,
+            email: user.email,
         })
-    }, [profileImage, domain, name, type, employeesNumber, email, password])
+    }, [user])
 
     const handleChange = (e: { target: { value: string; name: string; }; }) => {
         const { value, name } = e.target
@@ -55,6 +62,7 @@ export default function CompanyProfile() {
     }
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
+        setFile(file)
 
         const reader = new FileReader()
         reader.readAsDataURL(file as Blob)
@@ -64,6 +72,7 @@ export default function CompanyProfile() {
 
     }
 
+
     const handleSave = async () => {
         try {
             setWarning({
@@ -72,11 +81,24 @@ export default function CompanyProfile() {
                 type: '',
                 employeesNumber: '',
                 email: '',
-                password: '',
             })
             await validateCompanySchema.validate(data, { abortEarly: false })
-            console.log(data)
-            console.log(image)
+
+            const formData = new FormData()
+            formData.append('name', data.name)
+            formData.append('employess_count', data.employeesNumber)
+            formData.append('type', data.type)
+            formData.append('email', data.email)
+            formData.append('description', description)
+            formData.append('logo', file as File)
+            formData.append('domain', data.domain)
+
+            dispatch(updateCompanyProfile(formData)).unwrap().then(result => {
+                if (typeof result === 'string')
+                    setError(result)
+                else
+                    setError('')
+            })
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         catch (error: any) {
@@ -86,7 +108,6 @@ export default function CompanyProfile() {
                 type: '',
                 employeesNumber: '',
                 email: '',
-                password: '',
             })
             error.inner.forEach((err: { path: string, message: string }) => {
                 setWarning(prev => ({ ...prev, [err.path]: t(err.message) }))
@@ -107,7 +128,10 @@ export default function CompanyProfile() {
                             <IconEdit stroke={1} color="white" />
                             <input type="file" accept="image/*" hidden onChange={handleImage} />
                         </ActionIcon>
-                        <img src={image} alt="Profile Image" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+                        {image === null ?
+                            <Avatar color="red" radius="xl" name={data.name} style={{ width: '100px', height: '100px', borderRadius: '50%', outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} />
+                            :
+                            <img src={image} alt="Profile Image" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />}
                     </div>
 
                     <div className='flex flex-wrap justify-start px-2 gap-y-7 gap-x-3 my-10'>
@@ -120,7 +144,7 @@ export default function CompanyProfile() {
                         </Input.Wrapper>
 
                         <Input.Wrapper error={warning.type} className={styles.input}>
-                            <NativeSelect data={[{ label: t('governmentCompany'), value: 'government' }, { label: t('privateCompany'), value: 'private' }]} value={data.type} name='type' onChange={handleChange} />
+                            <NativeSelect data={[{ label: t('governmentCompany'), value: 'حكومية' }, { label: t('privateCompany'), value: 'خاصة' }]} value={data.type} name='type' onChange={handleChange} />
                         </Input.Wrapper>
 
                         <Input.Wrapper error={warning.employeesNumber} className={styles.input}>
@@ -134,8 +158,12 @@ export default function CompanyProfile() {
                         <Textarea
                             placeholder={t('enterDescription')}
                             style={{ width: '100%' }}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
+
+                    <div className='text-center text-red-500 text-xs'>{error}</div>
 
                     <div className="flex justify-center my-5" onClick={() => setSlowTransitionOpened(true)}>
                         <SecondaryButton title={t('changePassword')} />
@@ -146,10 +174,14 @@ export default function CompanyProfile() {
                             <PrimaryButton title={t('saveChanges')} />
                         </div>
                         <Link to={'/programs'}>
-                            <div onClick={handleSave}>
+                            <div>
                                 <SecondaryButton title={t('addRemoveProgram')} />
                             </div>
                         </Link>
+                    </div>
+
+                    <div className="my-7">
+                        {loadingCompanyProfile === 'pending' && <LoadingComp />}
                     </div>
 
 

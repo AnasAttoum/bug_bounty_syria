@@ -1,13 +1,14 @@
 import { Table } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { Pagination } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styles from '../styles/bugs.module.css'
-import { useSelector } from 'react-redux';
-import { RootState } from '../lib/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../lib/store';
 import { IconCirclePlus } from '@tabler/icons-react';
 import ModalRating from '../components/Modal/ModalRating';
+import { reports } from '../lib/slices/userSlice';
 
 export default function Bugs() {
 
@@ -17,6 +18,11 @@ export default function Bugs() {
   const [page, setPage] = useState(1);
   const [slowTransitionOpenedRating, setSlowTransitionOpenedRating] = useState(false);
   const { t } = useTranslation()
+  const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(()=>{
+    dispatch(reports())
+  },[dispatch])
 
   const elements = [
     { bugName: 'تسجيل', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },

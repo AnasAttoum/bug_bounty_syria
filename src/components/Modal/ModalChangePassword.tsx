@@ -3,10 +3,16 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { validateChangePassword } from '../../validations/validations';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../lib/store';
+import { updateCompanyPassword } from '../../lib/slices/userSlice';
+import LoadingComp from '../LoadingComp';
 
 export default function ModalChangePassword({ slowTransitionOpened, setSlowTransitionOpened }: { slowTransitionOpened: boolean, setSlowTransitionOpened: Dispatch<SetStateAction<boolean>> }) {
 
     const { t } = useTranslation()
+    const { loadingCompanyPassword } = useSelector((state: RootState) => state.reducers.user)
+
     const [data, setData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -17,6 +23,10 @@ export default function ModalChangePassword({ slowTransitionOpened, setSlowTrans
         newPassword: '',
         confirmPassword: '',
     })
+
+
+    const dispatch = useDispatch<AppDispatch>()
+    const [error, setError] = useState('')
 
     useEffect(() => {
         if (slowTransitionOpened) {
@@ -46,8 +56,21 @@ export default function ModalChangePassword({ slowTransitionOpened, setSlowTrans
                 confirmPassword: '',
             })
             await validateChangePassword.validate(data, { abortEarly: false })
-            console.log(data)
-            setSlowTransitionOpened(false)
+
+            const formData = new FormData()
+            formData.append('old_password', data.currentPassword)
+            formData.append('new_password', data.newPassword)
+            formData.append('new_password_confirmation', data.confirmPassword)
+
+            dispatch(updateCompanyPassword(formData)).unwrap().then(result => {
+                if (typeof result === 'string')
+                    setError(result)
+                else {
+                    setError('')
+                    setSlowTransitionOpened(false)
+                }
+            })
+
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         catch (error: any) {
@@ -85,11 +108,16 @@ export default function ModalChangePassword({ slowTransitionOpened, setSlowTrans
                         <PasswordInput placeholder={t('enterConfirmPassword')} value={data.confirmPassword} name='confirmPassword' onChange={handleChange} />
                     </Input.Wrapper>
 
+                    <div className='text-center text-red-500 text-xs'>{error}</div>
+
                     <div className="flex justify-center my-5">
                         <div onClick={handleSave}>
                             <PrimaryButton title={t('saveChanges')} />
                         </div>
                     </div>
+
+                    {loadingCompanyPassword === 'pending' && <div className="my-7"><LoadingComp /></div>}
+                    
                 </div>
             </Modal>
         </>

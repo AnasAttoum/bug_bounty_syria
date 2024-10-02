@@ -13,7 +13,6 @@ export const validateCompanySchema = yup.object({
     type: yup.string().required('invalidType'),
     employeesNumber: yup.number().min(1, 'invalidNumber').required('invalidEntry'),
     email: yup.string().email('invalidEmail').required('invalidEmail'),
-    password: yup.string().min(7, 'invalidPasswordLength').required('invalidPassword'),
 })
 
 export const validateLogInSchema = yup.object({

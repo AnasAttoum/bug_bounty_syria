@@ -36,6 +36,7 @@
     "invalidNumber": "Invalid number",
     "invalidEntry": "Invalid entry",
     "enterCode": "Enter the registration code",
+    "codeContains": "The registration code consists of 8 digits containing numbers and letters.",
     "enterDescription": "Enter description",
     "discover": "Discover opportunities now!",
     "moreThan": "More than 127 companies are waiting for you. What are you waiting for! Start now!",
@@ -78,5 +79,6 @@
     "addRemoveProgram": "Add/Remove Program",
     "addProgram": "Add Program",
     "directContact": "Direct contact",
+    "pass": "Continue",
     "footer": "Copyright © 2024 Bug Bounty Syria. All Rights Reserved"
 }

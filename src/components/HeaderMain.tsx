@@ -1,10 +1,9 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import PrimaryButton from './buttons/PrimaryButton';
-import SecondaryButton from './buttons/SecondaryButton';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import { useSelector } from 'react-redux';
 import { RootState } from '../lib/store';
-import { IconMenu2, IconX } from '@tabler/icons-react';
+import { Avatar } from '@mantine/core'
+import { IconBell, IconMenu2, IconX } from '@tabler/icons-react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -19,11 +18,14 @@ import { useTranslation } from 'react-i18next';
 import styles from '../styles/header.module.css'
 
 
-export default function Header() {
+export default function HeaderMain() {
 
     const { token } = useSelector((state: RootState) => state.reducers.user)
     const navigate = useNavigate()
     const { t } = useTranslation()
+
+    const location = useLocation()
+    const { pathname } = location
 
     const [lang, setLang] = useState('');
     const [hamb, setHamb] = useState(false);
@@ -43,8 +45,8 @@ export default function Header() {
     }, [currentLanguage])
 
     useEffect(() => {
-        if (token !== '')
-            navigate('/')
+        if (token === '')
+            navigate('/auth/login')
     }, [token, navigate])
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -59,7 +61,7 @@ export default function Header() {
                 {hamb ? <IconX stroke={2} color='var(--primary)' className={styles.hamb} onClick={() => setHamb(false)} />
                     : <IconMenu2 stroke={2} color='var(--primary)' className={styles.hamb} onClick={() => setHamb(true)} />}
                 <div className='flex gap-5'>
-                    <Link to={'/auth/login'}>
+                    <Link to={'/'}>
                         <svg width="5em" height="" viewBox="0 0 131 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M68.2563 24.0405C68.2943 24.0806 68.3239 24.1279 68.3433 24.1798C68.3627 24.2316 68.3716 24.2869 68.3694 24.3423V26.3843L69.8625 27.1314C69.917 27.157 69.9625 27.1988 69.993 27.2511C70.0236 27.3034 70.0377 27.3638 70.0336 27.4244V30.486C70.0351 30.54 70.0259 30.5937 70.0065 30.6441C69.9871 30.6944 69.9578 30.7403 69.9205 30.779L68.668 32.0431C68.6285 32.0817 68.5816 32.1119 68.5303 32.1317C68.479 32.1516 68.4243 32.1608 68.3694 32.1589H58.3334C58.0624 32.1589 57.9348 32.0124 57.9348 31.7194V22.6372C57.9348 22.3647 58.0624 22.2212 58.3334 22.2212H66.1427C66.2174 22.219 66.2918 22.2332 66.3606 22.2628C66.4294 22.2924 66.491 22.3367 66.5414 22.3926L68.2563 24.0405ZM65.3961 23.8252C65.3607 23.7902 65.3184 23.7631 65.2719 23.7457C65.2255 23.7283 65.1759 23.721 65.1265 23.7241H60.879C60.7225 23.7241 60.6369 23.8106 60.6369 23.9981V26.4122H66.2717V24.8316C66.2709 24.7828 66.2604 24.7347 66.2407 24.6901C66.221 24.6455 66.1926 24.6055 66.1572 24.5723L65.3961 23.8252ZM66.5558 27.4332H60.6369V30.3629C60.6369 30.549 60.7225 30.6354 60.8935 30.6354H66.5269C66.5955 30.6362 66.6618 30.6105 66.7124 30.5636L67.3242 29.9601C67.3535 29.9299 67.3763 29.8939 67.391 29.8542C67.4057 29.8146 67.4121 29.7723 67.4097 29.7301V27.9723C67.4121 27.9435 67.4067 27.9145 67.3939 27.8887C67.3811 27.8628 67.3615 27.8411 67.3372 27.8258L66.5558 27.4332Z" fill="#CC0A26" />
                             <path d="M82.3889 23.6817C82.4399 23.7321 82.4801 23.7926 82.507 23.8594C82.5339 23.9261 82.547 23.9978 82.5455 24.0699V30.3014C82.5469 30.3735 82.5337 30.4451 82.5068 30.5118C82.4799 30.5785 82.4398 30.6391 82.3889 30.6896L81.0132 32.0182C80.9682 32.0623 80.9148 32.0966 80.8562 32.119C80.7976 32.1414 80.7351 32.1515 80.6725 32.1486H72.914C72.8514 32.1515 72.7889 32.1414 72.7304 32.119C72.6718 32.0966 72.6183 32.0623 72.5734 32.0182L71.1933 30.6823C71.1425 30.6317 71.1024 30.5712 71.0754 30.5045C71.0485 30.4377 71.0353 30.3662 71.0367 30.2941V24.0699C71.0352 23.9978 71.0483 23.9261 71.0752 23.8594C71.1021 23.7926 71.1423 23.7321 71.1933 23.6817L72.5734 22.3442C72.6185 22.3004 72.672 22.2664 72.7305 22.2443C72.7891 22.2221 72.8515 22.2122 72.914 22.2153H80.6682C80.7307 22.2122 80.7931 22.2221 80.8517 22.2443C80.9103 22.2664 80.9637 22.3004 81.0089 22.3442L82.3889 23.6817ZM79.1287 23.8399C79.0567 23.767 78.9594 23.7255 78.8576 23.7241H74.7217C74.6199 23.7255 74.5226 23.767 74.4506 23.8399L73.8114 24.4712C73.7779 24.5051 73.7517 24.5457 73.7345 24.5903C73.7173 24.6349 73.7094 24.6827 73.7113 24.7305V29.632C73.7094 29.6798 73.7173 29.7276 73.7345 29.7722C73.7517 29.8168 73.7779 29.8573 73.8114 29.8913L74.4506 30.5241C74.5227 30.5965 74.6201 30.6376 74.7217 30.6383H78.8605C78.9622 30.6376 79.0595 30.5965 79.1316 30.5241L79.7723 29.8913C79.8056 29.8573 79.8315 29.8167 79.8485 29.7721C79.8655 29.7274 79.8731 29.6797 79.8709 29.632V24.7349C79.8731 24.6871 79.8655 24.6394 79.8485 24.5948C79.8315 24.5502 79.8056 24.5096 79.7723 24.4756L79.1287 23.8399Z" fill="#CC0A26" />
@@ -83,6 +85,14 @@ export default function Header() {
                             <path d="M114.429 5.69156C114.437 5.73752 114.433 5.78464 114.419 5.82899C114.405 5.87335 114.381 5.91367 114.348 5.94661C114.315 5.97956 114.275 6.00417 114.232 6.0184C114.188 6.03264 114.141 6.0361 114.096 6.02848H104.445C104.35 6.01869 104.255 6.03193 104.166 6.06709C104.077 6.10225 103.998 6.15832 103.935 6.23063L102.758 7.35273C102.685 7.43256 102.645 7.53728 102.646 7.6457V14.9481C102.643 15.0195 102.656 15.0906 102.683 15.1566C102.71 15.2226 102.751 15.2819 102.803 15.3304L104.252 16.7001C104.296 16.7444 104.348 16.7793 104.405 16.8025C104.463 16.8256 104.524 16.8367 104.586 16.8348H111.234C111.479 16.8348 111.591 16.7001 111.591 16.4086V10.9021C111.591 10.656 111.701 10.5432 111.924 10.5432H114.645C114.89 10.5432 115.002 10.656 115.002 10.9021V18.5194C115.002 18.9677 114.778 19.1933 114.357 19.1933H102.178C101.974 19.1987 101.776 19.1265 101.623 18.9911L98.6206 16.1376C98.555 16.0736 98.5034 15.9966 98.4689 15.9113C98.4345 15.8261 98.418 15.7345 98.4206 15.6424V6.49871C98.418 6.40688 98.4345 6.31553 98.469 6.23051C98.5034 6.1455 98.5551 6.0687 98.6206 6.00505L100.778 3.91467C100.853 3.83654 100.943 3.7745 101.043 3.73223C101.143 3.68996 101.25 3.66831 101.358 3.66857H114.097C114.319 3.66857 114.43 3.77991 114.43 4.02747L114.429 5.69156Z" fill="#CC0A26" />
                         </svg>
                     </Link>
+                    <div className={`${styles.links} flex gap-5`}>
+                        <Link to={'/'} className={`${pathname === '/' ? styles.link : null} text-lg`} style={{ color: 'var(--primary)' }}>
+                            {t('home')}
+                        </Link>
+                        <Link to={'/bugs'} className={`${pathname === '/bugs' ? styles.link : null} text-lg`} style={{ color: 'var(--primary)' }}>
+                            {t('discoveredBugs')}
+                        </Link>
+                    </div>
                 </div>
 
                 <div className='flex items-center gap-3'>
@@ -134,20 +144,26 @@ export default function Header() {
                             </FormControl>
                         </div>
                     </Box>
-                    
-                            <Link to={'/auth/signup'}>
-                                <PrimaryButton title={t('signUpForFree')} />
-                            </Link>
 
-                            <Link to={'/auth/login'}>
-                                <SecondaryButton title={t('log')} />
-                            </Link>
+                    <IconBell color='var(--primary)' stroke={1.5} />
+                    <Avatar color="red" radius="xl" name='Anas Attoum' style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => navigate('/profile')} />
+
                 </div>
 
 
             </div>
             {hamb &&
                 <div className={styles.responsive} style={{ backgroundImage: 'url(/background.svg)', backgroundRepeat: 'no-repeat' }}>
+                    <div className='flex flex-col gap-10'>
+                        <div className={`flex flex-col items-center gap-16`}>
+                            <Link to={'/'} className={`${pathname === '/' ? styles.link : null} text-lg`} style={{ color: 'var(--primary)' }} onClick={() => setHamb(false)}>
+                                {t('home')}
+                            </Link>
+                            <Link to={'/bugs'} className={`${pathname === '/bugs' ? styles.link : null} text-lg`} style={{ color: 'var(--primary)' }} onClick={() => setHamb(false)}>
+                                {t('discoveredBugs')}
+                            </Link>
+                        </div>
+                    </div>
 
                     <div className='flex flex-col items-center gap-16 mt-16'>
                         <Box>
@@ -198,14 +214,10 @@ export default function Header() {
                                 </FormControl>
                             </div>
                         </Box>
-                        
-                                <Link to={'/signup'} style={{ display: 'contents' }} onClick={() => setHamb(false)}>
-                                    <PrimaryButton title={t('signUpForFree')} />
-                                </Link>
 
-                                <Link to={'/login'} onClick={() => setHamb(false)}>
-                                    <SecondaryButton title={t('log')} />
-                                </Link>
+                        <IconBell color='var(--primary)' stroke={1.5} />
+                        <Avatar color="red" radius="xl" name='Anas Attoum' style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+
                     </div>
                 </div>
             }

@@ -36,6 +36,7 @@
     "invalidNumber": "Ungültige Nummer",
     "invalidEntry": "Ungültiger Eintrag",
     "enterCode": "Geben Sie den Registrierungscode ein",
+    "codeContains": "Der Registrierungscode besteht aus 8 Ziffern, die Zahlen und Buchstaben enthalten",
     "enterDescription": "Geben Sie eine Beschreibung ein",
     "discover": "Entdecken Sie jetzt Möglichkeiten!",
     "moreThan": "Mehr als 127 Unternehmen warten auf Sie. Worauf warten Sie noch! Starten Sie jetzt!",
@@ -78,5 +79,6 @@
     "addRemoveProgram": "Ein Programm hinzufügen/löschen",
     "addProgram": "Ein Programm hinzufügen",
     "directContact": "Direkte Kommunikation",
+    "pass": "Weitermachen",
     "footer": "Urheberrecht © 2024 Bug Bounty Syrien. Alle Rechte vorbehalten"
 }

@@ -61,7 +61,7 @@ export default function SignUp() {
                 <Divider my="xs" label={<span style={{ color: 'black', fontWeight: '900' }}>{t('or')}</span>} labelPosition="center" color='black' />
 
                 <div className='flex justify-center'>
-                    <Link to={'/login'}>
+                    <Link to={'/auth/login'}>
                         <SecondaryButton title={t('logIn')} />
                     </Link>
                 </div>

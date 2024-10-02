@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Input, PasswordInput } from '@mantine/core';
-import { IconUser, IconPhone, IconMail, IconCode } from '@tabler/icons-react';
+import { IconUser, IconPhone, IconMail } from '@tabler/icons-react';
 
 import { Checkbox } from '@mantine/core';
 
@@ -8,6 +8,12 @@ import styles from '../../styles/signUp.module.css'
 import PrimaryButton from '../buttons/PrimaryButton';
 import { useTranslation } from 'react-i18next';
 import { validateSecurityResearcherSchema } from '../../validations/validations';
+import { useDispatch, useSelector } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
+import { registerSR } from '../../lib/slices/userSlice';
+import LoadingComp from '../LoadingComp';
+import { AppDispatch, RootState } from '../../lib/store';
 
 export default function SignUpSecurityResearcher() {
 
@@ -17,19 +23,21 @@ export default function SignUpSecurityResearcher() {
     email: '',
     phone: '',
     password: '',
-    code: '',
   });
   const [warning, setWarning] = useState({
     name: '',
     email: '',
     phone: '',
     password: '',
-    code: '',
     terms: ''
   });
 
   const terms = useRef<boolean>(true)
   const { t } = useTranslation()
+  const dispatch = useDispatch<AppDispatch>()
+  const { loadingSR } = useSelector((state: RootState) => state.reducers.user)
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
 
 
   const handleChange = (e: { target: { value: string; name: string; }; }) => {
@@ -45,13 +53,26 @@ export default function SignUpSecurityResearcher() {
 
       try {
         await validateSecurityResearcherSchema.validate(data, { abortEarly: false })
-        console.log(data)
+
+        const formData = new FormData()
+        formData.append('name', data.name)
+        formData.append('email', data.email)
+        formData.append('phone', data.phone)
+        formData.append('password', data.password)
+
+        dispatch(registerSR(formData)).then(unwrapResult).then(result => {
+          if (typeof result !== 'string')
+            navigate(`/code/${result.data.data.researcher.uuid}`)
+          else {
+            setError(result)
+          }
+        })
+
         setWarning({
           name: '',
           email: '',
           phone: '',
           password: '',
-          code: '',
           terms: ''
         })
       }
@@ -62,7 +83,6 @@ export default function SignUpSecurityResearcher() {
           email: '',
           phone: '',
           password: '',
-          code: '',
           terms: ''
         })
         error.inner.forEach(({ message, path }: { message: string, path: string }) => {
@@ -95,9 +115,9 @@ export default function SignUpSecurityResearcher() {
           <PasswordInput placeholder={t('enterPassword')} name='password' onChange={handleChange} />
         </Input.Wrapper>
 
-        <Input.Wrapper error={warning.code} className={styles.input}>
+        {/* <Input.Wrapper error={warning.code} className={styles.input}>
           <Input placeholder={t('enterCode')} rightSection={<IconCode size={16} />} name='code' onChange={handleChange} />
-        </Input.Wrapper>
+        </Input.Wrapper> */}
       </div>
 
       <Checkbox
@@ -108,11 +128,13 @@ export default function SignUpSecurityResearcher() {
       />
 
       <div className='text-red-500 text-xs'>{warning.terms}</div>
+      <div className='text-center text-red-500 text-xs'>{error}</div>
 
-      <div className='flex justify-center'>
+      <div className='flex flex-col items-center gap-7 mb-5'>
         <div onClick={handleCreate}>
           <PrimaryButton title={t('signUp')} />
         </div>
+        {loadingSR === 'pending' && <LoadingComp />}
       </div>
 
     </div>

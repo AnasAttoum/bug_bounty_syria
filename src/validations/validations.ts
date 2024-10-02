@@ -5,7 +5,6 @@ export const validateSecurityResearcherSchema = yup.object({
     email: yup.string().email('invalidEmail').required('invalidEmail'),
     phone: yup.string().min(9, 'invalidNumber').required('invalidNumber'),
     password: yup.string().min(7, 'invalidPasswordLength').required('invalidPassword'),
-    code: yup.string().required('invalidEntry'),
 })
 
 export const validateCompanySchema = yup.object({

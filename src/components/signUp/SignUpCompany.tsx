@@ -9,8 +9,11 @@ import PrimaryButton from '../buttons/PrimaryButton';
 import { useTranslation } from 'react-i18next';
 import { validateCompanySchema } from '../../validations/validations';
 import { registerCompany } from '../../lib/slices/userSlice';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../lib/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../lib/store';
+import LoadingComp from '../LoadingComp';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUpCompany() {
 
@@ -33,9 +36,13 @@ export default function SignUpCompany() {
     terms: ''
   });
   const dispatch = useDispatch<AppDispatch>()
+  const [error,setError]=useState('')
+  const { loadingCompany } = useSelector((state: RootState) => state.reducers.user)
 
   const terms = useRef<boolean>(true)
   const { t } = useTranslation()
+  const navigate = useNavigate()
+
 
   const handleChange = (e: { target: { value: string; name: string; }; }) => {
     const { value, name } = e.target
@@ -48,27 +55,24 @@ export default function SignUpCompany() {
     else {
       setWarning(prev => ({ ...prev, terms: '' }))
 
-      const formData = new FormData()
-      formData.append('name', 'دربني')
-      formData.append('employess_count', '50')
-      formData.append('type', 'خاصة')
-      formData.append('email', 'darrbny@gmail.com')
-      formData.append('password', '123456789')
-      formData.append('domain', 'https://darrbny.com')
-
-      dispatch(registerCompany(formData))
       try {
         await validateCompanySchema.validate({ ...data, emplyeesNumber: parseInt(data.employeesNumber) }, { abortEarly: false })
 
-        // const formData = new FormData()
-        // formData.append('name',data.name)
-        // formData.append('employess_count',data.employeesNumber)
-        // formData.append('type',data.type)
-        // formData.append('email',data.email)
-        // formData.append('password',data.password)
-        // formData.append('domain',data.domain)
-        
-        // dispatch(registerCompany(formData))
+        const formData = new FormData()
+        formData.append('name', data.name)
+        formData.append('employess_count', data.employeesNumber)
+        formData.append('type', data.type)
+        formData.append('email', data.email)
+        formData.append('password', data.password)
+        formData.append('domain', data.domain)
+
+        dispatch(registerCompany(formData)).then(unwrapResult).then(result => {
+          if (typeof result !== 'string')
+            navigate('/login')
+          else{
+            setError(result)
+          }
+        })
 
         setWarning({
           domain: '',
@@ -135,11 +139,13 @@ export default function SignUpCompany() {
       />
 
       <div className='text-red-500 text-xs'>{warning.terms}</div>
+      <div className='text-center text-red-500 text-xs'>{error}</div>
 
-      <div className='flex justify-center'>
+      <div className='flex flex-col items-center gap-7 mb-5'>
         <div onClick={handleCreate}>
           <PrimaryButton title={t('signUp')} />
         </div>
+        {loadingCompany === 'pending' && <LoadingComp />}
       </div>
 
     </div>

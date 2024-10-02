@@ -36,6 +36,7 @@
     "invalidNumber": "رقم خاطئ",
     "invalidEntry": "إدخال خاطئ",
     "enterCode": "أدخل كود التسجيل",
+    "codeContains": "يتألف كود التسجيل من 8 خانات تحتوي أرقام حروف",
     "enterDescription": "أدخل الوصف",
     "discover": "اكتشف الفرص الآن!",
     "moreThan": "أكثر من 127 شركة بانتظارك ماذا تنتظر ابدأ الآن!",
@@ -78,5 +79,6 @@
     "addRemoveProgram": "إضافة/حذف برنامج",
     "addProgram": "إضافة برنامج",
     "directContact": "تواصل مباشر",
+    "pass": "متابعة ",
     "footer": "جميع الحقوق محفوظة © 2024 Bug Bounty سورية"
 }

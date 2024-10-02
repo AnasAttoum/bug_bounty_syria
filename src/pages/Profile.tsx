@@ -5,8 +5,7 @@ import CompanyProfile from "../components/profile/CompanyProfile"
 
 export default function Profile() {
 
-  const { user } = useSelector((state: RootState) => state.reducers.user)
-  const { signUpType } = user
+  const { signUpType } = useSelector((state: RootState) => state.reducers.user)
 
   return (
     <>

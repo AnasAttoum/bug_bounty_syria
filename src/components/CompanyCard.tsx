@@ -1,12 +1,13 @@
 import { IconBookmark, IconBookmarkFilled, IconWorld, IconExternalLink, IconUsers, IconBuilding } from '@tabler/icons-react';
 import { useState } from 'react';
 import SecondaryButton from './buttons/SecondaryButton';
-import { company } from '../lib/slices/companySlice';
 
 import styles from '../styles/companyCard.module.css'
 import { Link } from 'react-router-dom';
+import { company } from '../lib/slices/userSlice';
+import { Avatar } from '@mantine/core';
 
-export default function CompanyCard({ company: { id, image, name, link, description, people, type } }: { company: company }) {
+export default function CompanyCard({ company: { id, image, name, domain: link, description, people, type } }: { company: company }) {
 
   const [save, setSave] = useState<boolean>(false)
 
@@ -16,7 +17,11 @@ export default function CompanyCard({ company: { id, image, name, link, descript
       <div className='flex justify-between items-center'>
 
         <div className='flex gap-3 items-center'>
-          <img src={image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
+          {image === null ?
+            <Avatar color="red" radius="xl" name={name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} />
+            :
+            <img src={image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
+          }
           <div className='text-lg font-bold'>{name}</div>
         </div>
 

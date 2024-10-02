@@ -11,13 +11,13 @@ export interface company {
     id?: string,
     image: string,
     name: string,
-    phone: string,
-    email: string,
+    phone?: string,
+    email?: string,
     domain: string,
     description: string,
     people: string,
     type: string,
-    createAt: string
+    createdAt?: string
 }
 export interface SR {
     signUpType?: 1,
@@ -27,8 +27,8 @@ export interface SR {
     image: string,
     email: string,
     phone: string,
-    createAt: string
-    points: string
+    points: string,
+    createdAt: string
 }
 export interface program {
     uuid: string,
@@ -111,10 +111,26 @@ export const logIn = createAsyncThunk(
                     },
                 }
             )
+
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        catch (error: any) {
-            return error.response.data.error
+        // eslint-disable-next-line@typescript-eslint/no-explicit-any
+        catch {
+            try {
+                return await axios.post(`${import.meta.env.VITE_API}/researcher/login`,
+                    data,
+                    {
+                        headers: {
+                            "Access-Control-Allow-Origin": "*",
+                            "Content-Type": "application/json",
+                        },
+                    }
+                )
+
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            catch (error: any) {
+                return error.response.data.error
+            }
         }
     }
 )
@@ -146,6 +162,26 @@ export const homeCompany = createAsyncThunk(
         const token = getState().reducers.user.token
         try {
             return await api.get(`/company/home`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+export const homeSR = createAsyncThunk(
+    'user/homeSR',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (_, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.get(`/researcher/home`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -291,10 +327,13 @@ export const deleteProgram = createAsyncThunk(
 )
 
 
-const initialState: { token: string, user: company, SRs: SR[], reports: [], programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingCompanyPassword: string } = {
+const initialState: { token: string, signUpType: 0 | 1, user: company, userSR: SR, SRs: SR[], companies: company[], reports: [], programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingCompanyPassword: string } = {
     token: '',
-    user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
+    signUpType: 0,
+    user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createdAt: '' },
+    userSR: { signUpType: 1, code: false, id: '', name: '', image: '', email: '', phone: '', points: '', createdAt: '' },
     SRs: [],
+    companies: [],
     reports: [],
     programs: [],
     loadingCompany: '',
@@ -314,8 +353,10 @@ export const userSlice = createSlice({
             return {
                 ...state,
                 token: '',
-                user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
+                user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createdAt: '' },
+                userSR: { signUpType: 1, code: false, id: '', name: '', image: '', email: '', phone: '', points: '', createdAt: '' },
                 SRs: [],
+                companies: [],
                 reports: [],
                 programs: [],
                 loadingCompany: '',
@@ -362,19 +403,37 @@ export const userSlice = createSlice({
             .addCase(logIn.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loadingLogIn = 'fulfilled'
                 if (typeof action.payload !== 'string') {
-                    state.token = action.payload.data.data.token
-                    state.user = {
-                        signUpType: 0,
-                        id: action.payload.data.data.company.uuid,
-                        image: action.payload.data.data.company.logo,
-                        name: action.payload.data.data.company.name,
-                        phone: action.payload.data.data.company.phone,
-                        email: action.payload.data.data.company.email,
-                        domain: action.payload.data.data.company.domain,
-                        description: action.payload.data.data.company.description,
-                        people: action.payload.data.data.company.employess_count,
-                        type: action.payload.data.data.company.type,
-                        createAt: action.payload.data.data.company.created_at
+                    if (action.payload.data.data.company !== undefined) {
+                        state.token = action.payload.data.data.token
+                        state.signUpType = 0
+                        state.user = {
+                            signUpType: 0,
+                            id: action.payload.data.data.company.uuid,
+                            image: action.payload.data.data.company.logo,
+                            name: action.payload.data.data.company.name,
+                            phone: action.payload.data.data.company.phone,
+                            email: action.payload.data.data.company.email,
+                            domain: action.payload.data.data.company.domain,
+                            description: action.payload.data.data.company.description || '',
+                            people: action.payload.data.data.company.employess_count,
+                            type: action.payload.data.data.company.type,
+                            createdAt: action.payload.data.data.company.created_at
+                        }
+                    }
+                    else {
+                        state.token = action.payload.data.data.token
+                        state.signUpType = 1
+                        state.userSR = {
+                            signUpType: 1,
+                            code: action.payload.data.data.researcher.code,
+                            id: action.payload.data.data.researcher.uuid,
+                            name: action.payload.data.data.researcher.name,
+                            image: '',
+                            email: action.payload.data.data.researcher.email,
+                            phone: action.payload.data.data.researcher.phone,
+                            createdAt: action.payload.data.data.researcher.created_at,
+                            points: action.payload.data.data.researcher.points
+                        }
                     }
                 }
             })
@@ -397,8 +456,27 @@ export const userSlice = createSlice({
                         image: SR.image,
                         email: SR.email,
                         phone: SR.phone,
-                        createAt: SR.created_at,
+                        createdAt: SR.created_at,
                         points: SR.points
+                    }
+                })
+            })
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(homeSR.fulfilled, (state, action: PayloadAction<any>) => {
+                state.companies = action.payload.data.data.companies.map((company: {
+                    uuid: string, description: string, name: string, email: string, type: string, domain: string, logo: string, employess_count: number
+                }) => {
+                    return {
+                        id: company.uuid,
+                        image: company.logo,
+                        name: company.name,
+                        email: company.email,
+                        domain: company.domain,
+                        description: company.description,
+                        people: company.employess_count,
+                        type: company.type,
+                        createdAt: ''
                     }
                 })
             })
@@ -411,9 +489,12 @@ export const userSlice = createSlice({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .addCase(updateCompanyProfile.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loadingCompanyProfile = 'fulfilled'
-                if (typeof action.payload !== 'string')
+                if (typeof action.payload !== 'string') {
                     state.user = {
-                        ...state.user,
+                        signUpType: 0,
+                        id: state.user.id,
+                        phone: state.user.phone,
+                        createdAt: state.user.createdAt,
                         name: action.payload.data.data.name,
                         email: action.payload.data.data.email,
                         type: action.payload.data.data.type,
@@ -422,6 +503,8 @@ export const userSlice = createSlice({
                         domain: action.payload.data.data.domain,
                         people: action.payload.data.data.employess_count,
                     }
+                }
+
             })
             .addCase(updateCompanyProfile.pending, (state) => {
                 state.loadingCompanyProfile = 'pending'

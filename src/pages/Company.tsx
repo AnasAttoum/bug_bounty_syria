@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import { RootState } from "../lib/store"
-import { company } from "../lib/slices/companySlice"
 import { IconBookmark, IconBookmarkFilled, IconBuilding, IconExternalLink, IconUsers, IconWorld, IconCloudUpload } from "@tabler/icons-react"
 import { Button } from "@mantine/core"
 
@@ -11,10 +10,11 @@ import { useDisclosure } from "@mantine/hooks"
 import ModalReport from "../components/Modal/ModalReport"
 import { useInView } from "react-intersection-observer"
 import { useTranslation } from "react-i18next"
+import { company } from "../lib/slices/userSlice"
 
 export default function Company() {
 
-    const companies = useSelector((state: RootState) => state.reducers.company)
+    const { companies } = useSelector((state: RootState) => state.reducers.user)
 
     const { id } = useParams()
     const { t } = useTranslation()
@@ -23,12 +23,12 @@ export default function Company() {
     const [company, setCompany] = useState<company>({
         image: '',
         name: '',
-        link: '',
+        domain: '',
         description: '',
         people: '',
         type: '',
     })
-    const { image, name, link, description, people, type } = company
+    const { image, name, domain: link, description, people, type } = company
     const { ref: cards, inView: cardsInView, entry: cardsEntry } = useInView()
     const { ref: img, inView: imgInView, entry: imgEntry } = useInView()
     useEffect(() => {
@@ -37,10 +37,12 @@ export default function Company() {
     }, [imgInView, imgEntry])
 
     useEffect(() => {
-        let x = { image: '', name: '', link: '', description: '', people: '', type: '' }
-        if (id)
-            x = companies.find((company) => { return company.id === parseInt(id) }) || { image: '', name: '', link: '', description: '', people: '', type: '' }
-        setCompany(x)
+        let x
+        if (id) {
+            x = companies.find((company) => { return company.id === id })
+            if (x)
+                setCompany(x)
+        }
     }, [companies, id])
 
     useEffect(() => {

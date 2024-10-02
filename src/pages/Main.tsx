@@ -6,25 +6,22 @@ import CompanyCard from '../components/CompanyCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../lib/store';
 import { useEffect, useRef, useState } from 'react';
-import { company } from '../lib/slices/companySlice';
 
 import styles from '../styles/companyCard.module.css'
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'react-i18next';
 import { DonutChart } from '@mantine/charts';
 import SecurityResearcherCard from '../components/SecurityResearcherCard';
-import { homeCompany } from '../lib/slices/userSlice';
+import { company, homeCompany, homeSR } from '../lib/slices/userSlice';
 
 export default function Main() {
 
     const { t } = useTranslation()
-    const companies = useSelector((state: RootState) => state.reducers.company)
-    const { SRs } = useSelector((state: RootState) => state.reducers.user)
+    const { SRs,companies } = useSelector((state: RootState) => state.reducers.user)
 
     const dispatch = useDispatch<AppDispatch>()
 
-    const { user } = useSelector((state: RootState) => state.reducers.user)
-    const { signUpType } = user
+    const { signUpType } = useSelector((state: RootState) => state.reducers.user)
 
     const [viewCompanies, setViewCompanies] = useState<company[]>(companies)
     const [filterCLick, setFilterClick] = useState(false)
@@ -42,16 +39,20 @@ export default function Main() {
             cardsEntry2?.target.childNodes.forEach((el, index) => {
                 (el as HTMLElement).style.animation = `animation 1s ${index / 2}s forwards`
             })
-    }, [cardsInView, cardsEntry, cardsInView2, cardsEntry2, SRs])
+    }, [cardsInView, cardsEntry, cardsInView2, cardsEntry2, SRs,viewCompanies])
 
     useEffect(() => {
-        dispatch(homeCompany())
-    }, [dispatch])
+        if (signUpType === 0)
+            dispatch(homeCompany())
+        else
+            dispatch(homeSR())
+    }, [dispatch, signUpType])
 
     const handleSearch = () => {
         if (search.current) {
             const filteredCompanies = companies.filter((company) => {
-                return company.name.includes(search.current?.value || '') || company.description.includes(search.current?.value || '')
+                console.log(company.name.includes(search.current?.value || '') || company.description?.includes(search.current?.value || ''))
+                return company.name.includes(search.current?.value || '') || company.description?.includes(search.current?.value || '')
             });
 
             if (filters.current.publicationDate === 'newest') {

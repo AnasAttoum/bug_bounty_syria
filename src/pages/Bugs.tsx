@@ -12,8 +12,7 @@ import { reports } from '../lib/slices/userSlice';
 
 export default function Bugs() {
 
-  const { user } = useSelector((state: RootState) => state.reducers.user)
-  const { signUpType } = user
+  const { signUpType } = useSelector((state: RootState) => state.reducers.user)
 
   const [page, setPage] = useState(1);
   const [slowTransitionOpenedRating, setSlowTransitionOpenedRating] = useState(false);

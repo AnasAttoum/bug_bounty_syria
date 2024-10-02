@@ -25,10 +25,10 @@ export default function CompanyProfile() {
         type: '',
         employeesNumber: '',
         email: '',
+        description: ''
     });
     const [image, setImage] = useState('')
     const [file, setFile] = useState<File | undefined>(undefined)
-    const [description, setDescription] = useState('')
     const [warning, setWarning] = useState({
         domain: '',
         name: '',
@@ -53,7 +53,9 @@ export default function CompanyProfile() {
             type: user.type,
             employeesNumber: user.people,
             email: user.email,
+            description: user.description || ''
         })
+
     }, [user])
 
     const handleChange = (e: { target: { value: string; name: string; }; }) => {
@@ -72,7 +74,6 @@ export default function CompanyProfile() {
 
     }
 
-
     const handleSave = async () => {
         try {
             setWarning({
@@ -89,9 +90,11 @@ export default function CompanyProfile() {
             formData.append('employess_count', data.employeesNumber)
             formData.append('type', data.type)
             formData.append('email', data.email)
-            formData.append('description', description)
+            formData.append('description', data.description)
             formData.append('logo', file as File)
             formData.append('domain', data.domain)
+            console.log("🚀 ~ handleSave ~ description:", data.description)
+            console.log("🚀 ~ handleSave ~ formData:", formData)
 
             dispatch(updateCompanyProfile(formData)).unwrap().then(result => {
                 if (typeof result === 'string')
@@ -158,8 +161,8 @@ export default function CompanyProfile() {
                         <Textarea
                             placeholder={t('enterDescription')}
                             style={{ width: '100%' }}
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={data.description}
+                            name='description' onChange={handleChange}
                         />
                     </div>
 

@@ -17,7 +17,7 @@ export default function Company() {
     const companies = useSelector((state: RootState) => state.reducers.company)
 
     const { id } = useParams()
-    const {t}=useTranslation()
+    const { t } = useTranslation()
 
     const [save, setSave] = useState<boolean>(false)
     const [company, setCompany] = useState<company>({
@@ -69,7 +69,7 @@ export default function Company() {
 
                         <div className='flex justify-between items-center'>
                             <div className='flex gap-3 items-center'>
-                                <img src={image} alt={name} style={{ width: '58px', height: '58px' }} />
+                                <img src={image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
                                 <div className='text-lg font-extrabold'>{name}</div>
                             </div>
 
@@ -80,7 +80,7 @@ export default function Company() {
 
                         <a href={link.trim().startsWith('www.') ? `https://${link.trim()}` : link} target='_blank' rel="noopener noreferrer">
                             <div className='flex gap-1 px-3'>
-                                <IconWorld color='var(--primary)'/>
+                                <IconWorld color='var(--primary)' />
                                 <div>{link}</div>
                             </div>
                         </a>
@@ -107,20 +107,20 @@ export default function Company() {
                 <div className="font-extrabold">{t('companyPrograms')}</div>
 
                 <div className='flex flex-col gap-5' ref={cards}>
-                    <div className={`${styles.head} flex justify-evenly`} style={{color:'var(--primary)',borderBottom:'1px solid var(--primary)'}}>
-                        <div style={{width:'20vw',textAlign:'center'}}>{t('programName')}</div>
-                        <div style={{width:'20vw',textAlign:'center'}}>{t('programLink')}</div>
-                        <div style={{width:'40vw',textAlign:'center'}}>{t('description')}</div>
+                    <div className={`${styles.head} flex justify-evenly`} style={{ color: 'var(--primary)', borderBottom: '1px solid var(--primary)' }}>
+                        <div style={{ width: '20vw', textAlign: 'center' }}>{t('programName')}</div>
+                        <div style={{ width: '20vw', textAlign: 'center' }}>{t('programLink')}</div>
+                        <div style={{ width: '40vw', textAlign: 'center' }}>{t('description')}</div>
                     </div>
-                    <div className={`${styles.row} flex gap-5 justify-evenly py-3`} style={{borderBottom:'1px solid #999'}}>
-                        <div style={{width:'20vw',textAlign:'center'}}>البرنامج الأول</div>
-                        <div style={{width:'20vw',textAlign:'center',marginInline:'10px'}}>www.FirstApp.com</div>
-                        <div style={{width:'40vw',textAlign:'justify'}}>البرنامج الأول هو عبارة تطبيق يعمل حل مشكلة التطبيق الذي يعمل على إيجاد مشكلة لبرنامج معين بناء على تطبيقات</div>
+                    <div className={`${styles.row} flex gap-5 justify-evenly py-3`} style={{ borderBottom: '1px solid #999' }}>
+                        <div style={{ width: '20vw', textAlign: 'center' }}>البرنامج الأول</div>
+                        <div style={{ width: '20vw', textAlign: 'center', marginInline: '10px' }}>www.FirstApp.com</div>
+                        <div style={{ width: '40vw', textAlign: 'justify' }}>البرنامج الأول هو عبارة تطبيق يعمل حل مشكلة التطبيق الذي يعمل على إيجاد مشكلة لبرنامج معين بناء على تطبيقات</div>
                     </div>
                     <div className={`${styles.row} flex gap-5 justify-evenly py-3`}>
-                        <div style={{width:'20vw',textAlign:'center'}}>البرنامج الأول</div>
-                        <div style={{width:'20vw',textAlign:'center',marginInline:'10px'}}>www.FirstApp.com</div>
-                        <div style={{width:'40vw',textAlign:'justify'}}>البرنامج الأول هو عبارة تطبيق يعمل حل مشكلة التطبيق الذي يعمل على إيجاد مشكلة لبرنامج معين بناء على تطبيقات</div>
+                        <div style={{ width: '20vw', textAlign: 'center' }}>البرنامج الأول</div>
+                        <div style={{ width: '20vw', textAlign: 'center', marginInline: '10px' }}>www.FirstApp.com</div>
+                        <div style={{ width: '40vw', textAlign: 'justify' }}>البرنامج الأول هو عبارة تطبيق يعمل حل مشكلة التطبيق الذي يعمل على إيجاد مشكلة لبرنامج معين بناء على تطبيقات</div>
                     </div>
                 </div>
 

@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from 'axios'
 
-export interface securityResearcher {
+export interface user {
     signUpType: 0,
     id?: number,
     name: string,
@@ -10,11 +11,33 @@ export interface securityResearcher {
     code: string,
 }
 
-const initialState: { isLogged: boolean, securityResearcher: securityResearcher[] } = {
+export const registerCompany = createAsyncThunk(
+    'user/addCompany',
+    async (data: FormData) => {
+        console.log('RUN', data)
+        try {
+            return await axios.post(`${import.meta.env.VITE_API}/company/login`,
+                {
+                    data
+                },
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+        }
+        catch (error) {
+            console.log('Error in post company', error)
+        }
+    }
+)
+
+const initialState: { isLogged: boolean, user: user } = {
     isLogged: false,
-    securityResearcher: [
-        { id: 0, name: 'أنس عتوم', email: 'Anas@gmail.com', phone: '0951931846', password: '0123456789', code: 'C5E4RR7',signUpType: 0, },
-    ]
+    user: { id: 0, name: 'أنس عتوم', email: 'Anas@gmail.com', phone: '0951931846', password: '0123456789', code: 'C5E4RR7', signUpType: 0, },
+
 }
 
 export const userSlice = createSlice({
@@ -24,7 +47,14 @@ export const userSlice = createSlice({
         login: (state) => {
             return { ...state, isLogged: true }
         },
-    }
+    },
+    extraReducers(builder) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        builder.addCase(registerCompany.fulfilled, (state, action: PayloadAction<any>) => {
+            console.log(state)
+            console.log(action)
+        })
+    },
 })
 
 export const { login } = userSlice.actions

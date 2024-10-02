@@ -8,6 +8,8 @@ import '@mantine/core/styles.css';
 import { createTheme, Input, MantineProvider } from '@mantine/core';
 import StoreProvider from './lib/StoreProvider.tsx'
 
+import '@mantine/charts/styles.css';
+
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";

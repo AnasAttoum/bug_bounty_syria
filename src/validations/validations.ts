@@ -27,3 +27,9 @@ export const validateChangePassword = yup.object({
     newPassword: yup.string().min(7, 'invalidPassword').required('invalidPassword'),
     confirmPassword: yup.string().oneOf([yup.ref('newPassword')], 'mustMatch')
 })
+
+export const validateAddProgram = yup.object({
+    name: yup.string().required('invalidEntry'),
+    link: yup.string().required('invalidEntry'),
+    description: yup.string().required('invalidEntry'),
+})

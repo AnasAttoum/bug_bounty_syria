@@ -9,6 +9,13 @@
     --primary: #B21222;
     --secondary: rgba(178, 18, 34, 0.50);
     --black: #1D1D1B;
+
+    --accept: #008767;
+    --acceptOpacity: #00B08777;
+    --pending: #58595B;
+    --pendingOpacity: #58595B77;
+    --reject: #DF0404;
+    --rejectOpacity: #FFC5C5;
 }
 
 

@@ -8,6 +8,9 @@ import styles from '../../styles/signUp.module.css'
 import PrimaryButton from '../buttons/PrimaryButton';
 import { useTranslation } from 'react-i18next';
 import { validateCompanySchema } from '../../validations/validations';
+import { registerCompany } from '../../lib/slices/userSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../lib/store';
 
 export default function SignUpCompany() {
 
@@ -15,7 +18,7 @@ export default function SignUpCompany() {
     signUpType: 0,
     domain: '',
     name: '',
-    type: '0',
+    type: 'حكومية',
     employeesNumber: '0',
     email: '',
     password: '',
@@ -29,6 +32,7 @@ export default function SignUpCompany() {
     password: '',
     terms: ''
   });
+  const dispatch = useDispatch<AppDispatch>()
 
   const terms = useRef<boolean>(true)
   const { t } = useTranslation()
@@ -44,9 +48,28 @@ export default function SignUpCompany() {
     else {
       setWarning(prev => ({ ...prev, terms: '' }))
 
+      const formData = new FormData()
+      formData.append('name', 'دربني')
+      formData.append('employess_count', '50')
+      formData.append('type', 'خاصة')
+      formData.append('email', 'darrbny@gmail.com')
+      formData.append('password', '123456789')
+      formData.append('domain', 'https://darrbny.com')
+
+      dispatch(registerCompany(formData))
       try {
-        await validateCompanySchema.validate({...data,emplyeesNumber:parseInt(data.employeesNumber)}, { abortEarly: false })
-        console.log(data)
+        await validateCompanySchema.validate({ ...data, emplyeesNumber: parseInt(data.employeesNumber) }, { abortEarly: false })
+
+        // const formData = new FormData()
+        // formData.append('name',data.name)
+        // formData.append('employess_count',data.employeesNumber)
+        // formData.append('type',data.type)
+        // formData.append('email',data.email)
+        // formData.append('password',data.password)
+        // formData.append('domain',data.domain)
+        
+        // dispatch(registerCompany(formData))
+
         setWarning({
           domain: '',
           name: '',
@@ -88,7 +111,7 @@ export default function SignUpCompany() {
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.type} className={styles.input}>
-          <NativeSelect data={[{ label: t('governmentCompany'), value: 'government' }, { label: t('privateCompany'), value: 'private' }]} name='type' onChange={handleChange} />
+          <NativeSelect data={[{ label: t('governmentCompany'), value: 'حكومية' }, { label: t('privateCompany'), value: 'خاصة' }]} name='type' onChange={handleChange} />
         </Input.Wrapper>
 
         <Input.Wrapper error={warning.employeesNumber} className={styles.input}>

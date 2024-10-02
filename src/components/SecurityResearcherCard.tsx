@@ -1,12 +1,12 @@
-import { IconBookmark, IconBookmarkFilled, IconWorld, IconExternalLink, IconUsers, IconBuilding } from '@tabler/icons-react';
+import { IconBookmark, IconBookmarkFilled, IconStar } from '@tabler/icons-react';
 import { useState } from 'react';
 import SecondaryButton from './buttons/SecondaryButton';
-import { company } from '../lib/slices/companySlice';
 
 import styles from '../styles/companyCard.module.css'
 import { Link } from 'react-router-dom';
+import { securityResearcher } from '../lib/slices/securityResearcherSlice';
 
-export default function CompanyCard({ company: { id, image, name, link, description, people, type } }: { company: company }) {
+export default function SecurityResearcherCard({ SR: { id, image, name, rate, description } }: { SR: securityResearcher }) {
 
   const [save, setSave] = useState<boolean>(false)
 
@@ -26,22 +26,14 @@ export default function CompanyCard({ company: { id, image, name, link, descript
 
       </div>
 
-      <a href={link.trim().startsWith('www.') ? `https://${link.trim()}` : link} target='_blank' rel="noopener noreferrer">
-        <div className='flex gap-1 px-3'>
-          <IconWorld />
-          <div>{link}</div>
-          <IconExternalLink style={{ transform: 'rotateY(180deg)' }} />
-        </div>
-      </a>
+      <div className='flex gap-1 px-3'>
+        <IconStar stroke={2} />
+        <div>{rate} / 5.0</div>
+      </div>
 
       <div className='px-3 text-justify' style={{ display: '-webkit-box', lineClamp: '6', WebkitLineClamp: '6', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{description}</div>
 
-      <div className={`${styles.details} flex px-3 mt-4 gap-7`}>
-        <div className='flex gap-3'><IconUsers color='var(--primary)' /> {people}</div>
-        <div className='flex gap-3'><IconBuilding color='var(--primary)' />{type}</div>
-      </div>
-
-      <Link to={`/company/${id}`} style={{ display: 'contents' }}>
+      <Link to={`/sr/${id}`} style={{ display: 'contents' }}>
         <SecondaryButton title='قراءة المزيد' />
       </Link>
 

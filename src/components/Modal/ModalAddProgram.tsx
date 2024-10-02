@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { validateAddProgram } from '../../validations/validations';
 import { IconScreenshot, IconWorld } from '@tabler/icons-react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../lib/store';
+import { addProgram } from '../../lib/slices/userSlice';
 
 export default function ModalAddProgram({ slowTransitionOpened, setSlowTransitionOpened }: { slowTransitionOpened: boolean, setSlowTransitionOpened: Dispatch<SetStateAction<boolean>> }) {
 
@@ -18,6 +21,7 @@ export default function ModalAddProgram({ slowTransitionOpened, setSlowTransitio
         link: '',
         description: '',
     })
+    const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
         if (slowTransitionOpened) {
@@ -47,8 +51,17 @@ export default function ModalAddProgram({ slowTransitionOpened, setSlowTransitio
                 description: '',
             })
             await validateAddProgram.validate(data, { abortEarly: false })
-            console.log(data)
-            setSlowTransitionOpened(false)
+
+            const formData = new FormData()
+            formData.append('title', data.name)
+            formData.append('description', data.description)
+            formData.append('url', data.link)
+
+            dispatch(addProgram(formData)).unwrap().then(res=>{
+                if(typeof res !=='string')
+                    setSlowTransitionOpened(false)
+            })
+
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         catch (error: any) {

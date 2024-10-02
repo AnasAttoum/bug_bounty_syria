@@ -3,30 +3,33 @@ import { useSelector } from "react-redux"
 import { Link, useParams } from "react-router-dom"
 import { RootState } from "../lib/store"
 import { IconBookmark, IconBookmarkFilled, IconPhone, IconStar } from "@tabler/icons-react"
-import { Button } from "@mantine/core"
+import { Avatar, Button } from "@mantine/core"
 
 import styles from '../styles/company.module.css'
 import { useInView } from "react-intersection-observer"
 import { useTranslation } from "react-i18next"
-import { securityResearcher } from "../lib/slices/securityResearcherSlice"
 import ModalRating from "../components/Modal/ModalRating"
+import { SR } from "../lib/slices/userSlice"
 
 export default function SecurityResearcher() {
 
-    const SRs = useSelector((state: RootState) => state.reducers.securityResearcher)
+    const { SRs } = useSelector((state: RootState) => state.reducers.user)
 
     const { id } = useParams()
     const { t } = useTranslation()
 
     const [save, setSave] = useState<boolean>(false)
     const [slowTransitionOpenedRating, setSlowTransitionOpenedRating] = useState(false);
-    const [SR, setSR] = useState<securityResearcher>({
-        image: '',
+    const [SR, setSR] = useState<SR>({
+        code: false,
+        id: '',
         name: '',
-        rate: 0,
-        description: '',
+        image: '',
+        email: '',
+        phone: '',
+        createAt: '',
+        points: ''
     })
-    const { image, name, rate, description } = SR
     const { ref: cards, inView: cardsInView, entry: cardsEntry } = useInView()
     const { ref: img, inView: imgInView, entry: imgEntry } = useInView()
     useEffect(() => {
@@ -35,10 +38,12 @@ export default function SecurityResearcher() {
     }, [imgInView, imgEntry])
 
     useEffect(() => {
-        let x = { image: '', name: '', rate: 0, description: '' }
-        if (id)
-            x = SRs.find((sr) => { return sr.id === parseInt(id) }) || { image: '', name: '', rate: 0, description: '' }
-        setSR(x)
+        let x;
+        if (id) {
+            x = SRs.find((sr) => { return sr.id === id })
+            if (x)
+                setSR(x)
+        }
     }, [SRs, id])
 
     useEffect(() => {
@@ -55,6 +60,8 @@ export default function SecurityResearcher() {
         })
     }, [])
 
+    const { image, name, points: rate } = SR
+
 
     return (
         <>
@@ -67,7 +74,11 @@ export default function SecurityResearcher() {
                         <div className="flex flex-col gap-7">
                             <div className='flex justify-between items-center'>
                                 <div className='flex gap-3 items-center'>
-                                    <img src={image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
+                                    {image === null ?
+                                        <Avatar color="red" radius="xl" name={name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} />
+                                        :
+                                        <img src={image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
+                                    }
                                     <div className='text-lg font-extrabold'>{name}</div>
                                 </div>
 
@@ -77,7 +88,7 @@ export default function SecurityResearcher() {
                             </div>
 
 
-                            <div className='px-3 text-justify'>{description}</div>
+                            {/* <div className='px-3 text-justify'>{description}</div> */}
 
                             <div className='flex gap-1 px-3'>
                                 <IconStar color='var(--primary)' />

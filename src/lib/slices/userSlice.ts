@@ -30,6 +30,12 @@ export interface SR {
     createAt: string
     points: string
 }
+export interface program {
+    uuid: string,
+    title: string,
+    description: string,
+    url: string,
+}
 
 export const registerCompany = createAsyncThunk(
     'user/registerCompany',
@@ -219,12 +225,78 @@ export const updateCompanyPassword = createAsyncThunk(
     }
 )
 
+export const getPrograms = createAsyncThunk(
+    'user/programs',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (_data, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.get(`/company/all_product`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
 
-const initialState: { token: string, user: company, SRs: SR[], reports: [], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingCompanyPassword: string } = {
+export const addProgram = createAsyncThunk(
+    'user/addProgram',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (data: FormData, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.post(`/company/add_product`,
+                data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+
+export const deleteProgram = createAsyncThunk(
+    'user/deleteProgram',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (data: FormData, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.post(`/company/delete_product?=`,
+                data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+
+
+const initialState: { token: string, user: company, SRs: SR[], reports: [], programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingCompanyPassword: string } = {
     token: '',
     user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
     SRs: [],
     reports: [],
+    programs: [],
     loadingCompany: '',
     loadingSR: '',
     loadingCode: '',
@@ -244,6 +316,8 @@ export const userSlice = createSlice({
                 token: '',
                 user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
                 SRs: [],
+                reports: [],
+                programs: [],
                 loadingCompany: '',
                 loadingSR: '',
                 loadingCode: '',
@@ -366,6 +440,22 @@ export const userSlice = createSlice({
                 state.loadingCompanyPassword = 'rejected'
             })
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(getPrograms.fulfilled, (state, action: PayloadAction<any>) => {
+                state.programs = [...action.payload.data.data.products]
+            })
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(addProgram.fulfilled, (state, action: PayloadAction<any>) => {
+                state.programs.push(action.payload.data.data.product)
+            })
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(deleteProgram.fulfilled, (state, action: PayloadAction<any>) => {
+                state.programs = state.programs.filter((program) => {
+                    return program.uuid !== action.meta.arg.get('uuid')
+                })
+            })
     },
 })
 

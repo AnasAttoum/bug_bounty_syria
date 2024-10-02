@@ -3,8 +3,8 @@ import { IconSearch, IconX } from '@tabler/icons-react';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import { IconFilter } from '@tabler/icons-react';
 import CompanyCard from '../components/CompanyCard';
-import { useSelector } from 'react-redux';
-import { RootState } from '../lib/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../lib/store';
 import { useEffect, useRef, useState } from 'react';
 import { company } from '../lib/slices/companySlice';
 
@@ -13,12 +13,15 @@ import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'react-i18next';
 import { DonutChart } from '@mantine/charts';
 import SecurityResearcherCard from '../components/SecurityResearcherCard';
+import { homeCompany } from '../lib/slices/userSlice';
 
 export default function Main() {
 
     const { t } = useTranslation()
     const companies = useSelector((state: RootState) => state.reducers.company)
-    const securityResearcher = useSelector((state: RootState) => state.reducers.securityResearcher)
+    const { SRs } = useSelector((state: RootState) => state.reducers.user)
+
+    const dispatch = useDispatch<AppDispatch>()
 
     const { user } = useSelector((state: RootState) => state.reducers.user)
     const { signUpType } = user
@@ -39,7 +42,11 @@ export default function Main() {
             cardsEntry2?.target.childNodes.forEach((el, index) => {
                 (el as HTMLElement).style.animation = `animation 1s ${index / 2}s forwards`
             })
-    }, [cardsInView, cardsEntry, cardsInView2, cardsEntry2])
+    }, [cardsInView, cardsEntry, cardsInView2, cardsEntry2, SRs])
+
+    useEffect(() => {
+        dispatch(homeCompany())
+    }, [dispatch])
 
     const handleSearch = () => {
         if (search.current) {
@@ -62,7 +69,7 @@ export default function Main() {
     ];
 
     return (
-        <div className="flex flex-col gap-y-5 py-5 px-10 page" style={{ backgroundImage: 'url(/background.svg)', backgroundRepeat: 'no-repeat' }}>
+        <div className="flex flex-col gap-y-5 py-5 px-10 page" style={{ backgroundImage: 'url(/background.svg)', backgroundRepeat: 'no-repeat', minHeight: '72vh' }}>
 
             {(signUpType as number) === 0 ?
                 <>
@@ -79,7 +86,7 @@ export default function Main() {
                     <div className='text-center font-bold text-2xl py-1 px-10 mt-6 page'>{t('securityResearchers')}</div>
 
                     <div className='flex flex-wrap justify-evenly gap-5 mb-10' ref={cards2}>
-                        {securityResearcher.map((SR, index) => {
+                        {SRs.map((SR, index) => {
                             return <SecurityResearcherCard key={index} SR={SR} />
                         })}
                     </div>

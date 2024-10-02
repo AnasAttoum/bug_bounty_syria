@@ -4,9 +4,10 @@ import SecondaryButton from './buttons/SecondaryButton';
 
 import styles from '../styles/companyCard.module.css'
 import { Link } from 'react-router-dom';
-import { securityResearcher } from '../lib/slices/securityResearcherSlice';
+import { SR } from '../lib/slices/userSlice';
+import { Avatar } from '@mantine/core';
 
-export default function SecurityResearcherCard({ SR: { id, image, name, rate, description } }: { SR: securityResearcher }) {
+export default function SecurityResearcherCard({ SR: { id, image, name, points: rate } }: { SR: SR }) {
 
   const [save, setSave] = useState<boolean>(false)
 
@@ -16,7 +17,11 @@ export default function SecurityResearcherCard({ SR: { id, image, name, rate, de
       <div className='flex justify-between items-center'>
 
         <div className='flex gap-3 items-center'>
+          {image===null?
+          <Avatar color="red" radius="xl" name={name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} />
+          :
           <img src={image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
+          }
           <div className='text-lg font-bold'>{name}</div>
         </div>
 
@@ -31,7 +36,7 @@ export default function SecurityResearcherCard({ SR: { id, image, name, rate, de
         <div>{rate} / 5.0</div>
       </div>
 
-      <div className='px-3 text-justify' style={{ display: '-webkit-box', lineClamp: '6', WebkitLineClamp: '6', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{description}</div>
+      {/* <div className='px-3 text-justify' style={{ display: '-webkit-box', lineClamp: '6', WebkitLineClamp: '6', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{description}</div> */}
 
       <Link to={`/sr/${id}`} style={{ display: 'contents' }}>
         <SecondaryButton title='قراءة المزيد' />

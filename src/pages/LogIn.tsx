@@ -62,8 +62,7 @@ export default function LogIn() {
             formData.append('password', data.password)
             dispatch(logIn(formData)).then(unwrapResult).then(result => {
                 if (typeof result !== 'string')
-                    console.log(result)
-                    // navigate('/login')
+                    console.log('LogIn Successfully')
                 else {
                     setError(result)
                 }

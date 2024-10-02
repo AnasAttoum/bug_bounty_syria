@@ -1,9 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from 'axios'
 
+const initialState: { token: string, user: company, SRs: SR[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string } = {
+    token: '',
+    user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
+    SRs: [],
+    loadingCompany: '',
+    loadingSR: '',
+    loadingCode: '',
+    loadingLogIn: '',
+}
+
+const api = axios.create({
+    baseURL: import.meta.env.VITE_API,
+    // headers: { 'Authorization': `Bearer ${token}` },
+});
 
 export interface company {
-    signUpType: 0,
+    signUpType?: 0,
     id?: string,
     image: string,
     name: string,
@@ -16,12 +30,15 @@ export interface company {
     createAt: string
 }
 export interface SR {
+    signUpType?: 1,
+    code: boolean,
+    id: string,
     name: string,
-    employess_count: string,
-    type: string,
+    image: string,
     email: string,
-    password: string,
-    domain: string
+    phone: string,
+    createAt: string
+    points: string
 }
 
 export const registerCompany = createAsyncThunk(
@@ -105,24 +122,65 @@ export const logIn = createAsyncThunk(
         }
     }
 )
+// export const logOutComapny = createAsyncThunk(
+//     'user/logOutComapny',
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     async (_, { getState }: any) => {
+//         const token = getState().reducers.user.token
+//         try {
+//             return await api.post(`/company/company/logout`,
+//                 {
+//                     headers: {
+//                         'Authorization': `Bearer ${token}`
+//                     },
+//                 }
+//             )
+//         }
+//         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//         catch (error: any) {
+//             return error.response.data.error
+//         }
+//     }
+// )
 
-const initialState: { isLogged: boolean, token: string, user: company, loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string } = {
-    isLogged: false,
-    token: '',
-    user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
-    loadingCompany: '',
-    loadingSR: '',
-    loadingCode: '',
-    loadingLogIn: '',
-}
+export const homeCompany = createAsyncThunk(
+    'user/homeCompany',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (_, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.get(`/company/home`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+
 
 export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        login: (state) => {
-            return { ...state, isLogged: true }
-        },
+        logOut: (state) => {
+            return {
+                ...state,
+                token: '',
+                user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createAt: '' },
+                SRs: [],
+                loadingCompany: '',
+                loadingSR: '',
+                loadingCode: '',
+                loadingLogIn: '',
+            }
+        }
     },
     extraReducers(builder) {
         builder.addCase(registerCompany.fulfilled, (state) => {
@@ -186,9 +244,29 @@ export const userSlice = createSlice({
             .addCase(logIn.rejected, (state) => {
                 state.loadingLogIn = 'rejected'
             })
+
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(homeCompany.fulfilled, (state, action: PayloadAction<any>) => {
+                state.SRs = action.payload.data.data.researcher.map((SR: {
+                    uuid: string, name: string, email: string, phone: string, code: string, image: string, points: string, created_at: string
+                }) => {
+                    return {
+                        code: SR.code,
+                        id: SR.uuid,
+                        name: SR.name,
+                        image: SR.image,
+                        email: SR.email,
+                        phone: SR.phone,
+                        createAt: SR.created_at,
+                        points: SR.points
+                    }
+                })
+            })
     },
 })
 
-export const { login } = userSlice.actions
+
+export const { logOut } = userSlice.actions
 
 export default userSlice.reducer

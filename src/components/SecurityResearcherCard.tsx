@@ -17,10 +17,10 @@ export default function SecurityResearcherCard({ SR: { id, image, name, points: 
       <div className='flex justify-between items-center'>
 
         <div className='flex gap-3 items-center'>
-          {image===null?
-          <Avatar color="red" radius="xl" name={name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} />
-          :
-          <img src={image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
+          {image === null ?
+            <Avatar color="red" radius="xl" name={name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} />
+            :
+            <img src={import.meta.env.VITE_IMAGE_URL + image} alt={name} style={{ width: '58px', height: '58px', borderRadius: '50%' }} />
           }
           <div className='text-lg font-bold'>{name}</div>
         </div>

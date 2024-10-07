@@ -17,7 +17,7 @@ import { company, homeCompany, homeSR } from '../lib/slices/userSlice';
 export default function Main() {
 
     const { t } = useTranslation()
-    const { SRs,companies } = useSelector((state: RootState) => state.reducers.user)
+    const { SRs, companies } = useSelector((state: RootState) => state.reducers.user)
 
     const dispatch = useDispatch<AppDispatch>()
 
@@ -39,7 +39,7 @@ export default function Main() {
             cardsEntry2?.target.childNodes.forEach((el, index) => {
                 (el as HTMLElement).style.animation = `animation 1s ${index / 2}s forwards`
             })
-    }, [cardsInView, cardsEntry, cardsInView2, cardsEntry2, SRs,viewCompanies])
+    }, [cardsInView, cardsEntry, cardsInView2, cardsEntry2, SRs, viewCompanies, companies])
 
     useEffect(() => {
         if (signUpType === 0)
@@ -47,6 +47,10 @@ export default function Main() {
         else
             dispatch(homeSR())
     }, [dispatch, signUpType])
+
+    useEffect(()=>{
+        setViewCompanies(companies)
+    },[companies])
 
     const handleSearch = () => {
         if (search.current) {

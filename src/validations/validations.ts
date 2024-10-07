@@ -6,6 +6,11 @@ export const validateSecurityResearcherSchema = yup.object({
     phone: yup.string().min(9, 'invalidNumber').required('invalidNumber'),
     password: yup.string().min(7, 'invalidPasswordLength').required('invalidPassword'),
 })
+export const validateSecurityResearcherEditProfileSchema = yup.object({
+    name: yup.string().required('invalidName'),
+    email: yup.string().email('invalidEmail').required('invalidEmail'),
+    phone: yup.string().min(9, 'invalidNumber').required('invalidNumber'),
+})
 
 export const validateCompanySchema = yup.object({
     domain: yup.string().required('invalidDomain'),

@@ -12,7 +12,7 @@ import ModalLogOut from "../Modal/ModalLogOut";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../lib/store";
-import { updateCompanyProfile } from "../../lib/slices/userSlice";
+import { showCompany, updateCompanyProfile } from "../../lib/slices/userSlice";
 import LoadingComp from "../LoadingComp";
 
 export default function CompanyProfile() {
@@ -45,14 +45,15 @@ export default function CompanyProfile() {
 
 
     useEffect(() => {
-        setImage(user.image)
+        const x = user.image === '' ? 'null' : user.image
+        setImage(import.meta.env.VITE_IMAGE_URL + x)
 
         setData({
             domain: user.domain,
             name: user.name,
             type: user.type,
             employeesNumber: user.people,
-            email: user.email,
+            email: user.email as string,
             description: user.description || ''
         })
 
@@ -93,14 +94,14 @@ export default function CompanyProfile() {
             formData.append('description', data.description)
             formData.append('logo', file as File)
             formData.append('domain', data.domain)
-            console.log("🚀 ~ handleSave ~ description:", data.description)
-            console.log("🚀 ~ handleSave ~ formData:", formData)
 
             dispatch(updateCompanyProfile(formData)).unwrap().then(result => {
                 if (typeof result === 'string')
                     setError(result)
-                else
+                else{
+                    dispatch(showCompany())
                     setError('')
+                }
             })
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -131,10 +132,11 @@ export default function CompanyProfile() {
                             <IconEdit stroke={1} color="white" />
                             <input type="file" accept="image/*" hidden onChange={handleImage} />
                         </ActionIcon>
-                        {image === null ?
+                        {image.endsWith('null') ?
                             <Avatar color="red" radius="xl" name={data.name} style={{ width: '100px', height: '100px', borderRadius: '50%', outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} />
                             :
-                            <img src={image} alt="Profile Image" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />}
+                            <img src={image} alt="Profile Image" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+                        }
                     </div>
 
                     <div className='flex flex-wrap justify-start px-2 gap-y-7 gap-x-3 my-10'>

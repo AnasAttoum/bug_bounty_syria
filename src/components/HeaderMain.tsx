@@ -20,7 +20,7 @@ import styles from '../styles/header.module.css'
 
 export default function HeaderMain() {
 
-    const { token } = useSelector((state: RootState) => state.reducers.user)
+    const { token, user, userSR, signUpType } = useSelector((state: RootState) => state.reducers.user)
     const navigate = useNavigate()
     const { t } = useTranslation()
 
@@ -146,7 +146,24 @@ export default function HeaderMain() {
                     </Box>
 
                     <IconBell color='var(--primary)' stroke={1.5} />
-                    <Avatar color="red" radius="xl" name='Anas Attoum' style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => navigate('/profile')} />
+                    {
+                        signUpType === 0 ?
+                            <>
+                                {user.image === null || user.image === '' ?
+                                    <Avatar color="red" radius="xl" name={user.name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                                    :
+                                    <img src={import.meta.env.VITE_IMAGE_URL + user.image} alt={user.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                                }
+                            </>
+                            :
+                            <>
+                                {userSR.image === null || userSR.image === '' ?
+                                    <Avatar color="red" radius="xl" name={userSR.name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                                    :
+                                    <img src={import.meta.env.VITE_IMAGE_URL + userSR.image} alt={userSR.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                                }
+                            </>
+                    }
 
                 </div>
 
@@ -216,7 +233,11 @@ export default function HeaderMain() {
                         </Box>
 
                         <IconBell color='var(--primary)' stroke={1.5} />
-                        <Avatar color="red" radius="xl" name='Anas Attoum' style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                        {user.image === null || user.image === '' ?
+                            <Avatar color="red" radius="xl" name={user.name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                            :
+                            <img src={import.meta.env.VITE_IMAGE_URL + user.image} alt={user.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                        }
 
                     </div>
                 </div>

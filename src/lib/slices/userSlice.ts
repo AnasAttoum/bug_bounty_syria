@@ -21,14 +21,15 @@ export interface company {
 }
 export interface SR {
     signUpType?: 1,
-    code: boolean,
+    code: string,
     id: string,
     name: string,
     image: string,
     email: string,
     phone: string,
     points: string,
-    createdAt: string
+    createdAt: string,
+    description?: string
 }
 export interface program {
     uuid: string,
@@ -238,6 +239,47 @@ export const updateCompanyProfile = createAsyncThunk(
         }
     }
 )
+export const showCompany = createAsyncThunk(
+    'user/showCompany',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (_data, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.get(`/company/show`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+export const updateSRProfile = createAsyncThunk(
+    'user/updateSRProfile',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (data: FormData, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.post(`/researcher/profile`,
+                data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
 
 export const updateCompanyPassword = createAsyncThunk(
     'user/updateCompanyPassword',
@@ -327,11 +369,11 @@ export const deleteProgram = createAsyncThunk(
 )
 
 
-const initialState: { token: string, signUpType: 0 | 1, user: company, userSR: SR, SRs: SR[], companies: company[], reports: [], programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingCompanyPassword: string } = {
+const initialState: { token: string, signUpType: 0 | 1, user: company, userSR: SR, SRs: SR[], companies: company[], reports: [], programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingSRProfile: string, loadingCompanyPassword: string } = {
     token: '',
     signUpType: 0,
     user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createdAt: '' },
-    userSR: { signUpType: 1, code: false, id: '', name: '', image: '', email: '', phone: '', points: '', createdAt: '' },
+    userSR: { signUpType: 1, code: '', id: '', name: '', image: '', email: '', phone: '', points: '', createdAt: '' },
     SRs: [],
     companies: [],
     reports: [],
@@ -341,6 +383,7 @@ const initialState: { token: string, signUpType: 0 | 1, user: company, userSR: S
     loadingCode: '',
     loadingLogIn: '',
     loadingCompanyProfile: '',
+    loadingSRProfile: '',
     loadingCompanyPassword: '',
 }
 
@@ -353,8 +396,9 @@ export const userSlice = createSlice({
             return {
                 ...state,
                 token: '',
+                signUpType: 0,
                 user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createdAt: '' },
-                userSR: { signUpType: 1, code: false, id: '', name: '', image: '', email: '', phone: '', points: '', createdAt: '' },
+                userSR: { signUpType: 1, code: '', id: '', name: '', image: '', email: '', phone: '', points: '', createdAt: '' },
                 SRs: [],
                 companies: [],
                 reports: [],
@@ -364,6 +408,7 @@ export const userSlice = createSlice({
                 loadingCode: '',
                 loadingLogIn: '',
                 loadingCompanyProfile: '',
+                loadingSRProfile: '',
                 loadingCompanyPassword: '',
             }
         }
@@ -446,20 +491,21 @@ export const userSlice = createSlice({
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .addCase(homeCompany.fulfilled, (state, action: PayloadAction<any>) => {
-                state.SRs = action.payload.data.data.researcher.map((SR: {
-                    uuid: string, name: string, email: string, phone: string, code: string, image: string, points: string, created_at: string
-                }) => {
-                    return {
-                        code: SR.code,
-                        id: SR.uuid,
-                        name: SR.name,
-                        image: SR.image,
-                        email: SR.email,
-                        phone: SR.phone,
-                        createdAt: SR.created_at,
-                        points: SR.points
-                    }
-                })
+                if (action.payload.data !== undefined)
+                    state.SRs = action.payload.data.data.researcher.map((SR: {
+                        uuid: string, name: string, email: string, phone: string, code: string, image: string, points: string, created_at: string
+                    }) => {
+                        return {
+                            code: SR.code,
+                            id: SR.uuid,
+                            name: SR.name,
+                            image: SR.image,
+                            email: SR.email,
+                            phone: SR.phone,
+                            createdAt: SR.created_at,
+                            points: SR.points
+                        }
+                    })
             })
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -489,12 +535,36 @@ export const userSlice = createSlice({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .addCase(updateCompanyProfile.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loadingCompanyProfile = 'fulfilled'
+                // if (typeof action.payload !== 'string') {
+                //     state.user = {
+                //         signUpType: 0,
+                //         id: state.user.id,
+                //         phone: state.user.phone,
+                //         createdAt: state.user.createdAt,
+                //         name: action.payload.data.data.name,
+                //         email: action.payload.data.data.email,
+                //         type: action.payload.data.data.type,
+                //         description: action.payload.data.data.description,
+                //         image: action.payload.data.data.logo,
+                //         domain: action.payload.data.data.domain,
+                //         people: action.payload.data.data.employess_count,
+                //     }
+                // }
+
+            })
+            .addCase(updateCompanyProfile.pending, (state) => {
+                state.loadingCompanyProfile = 'pending'
+            })
+            .addCase(updateCompanyProfile.rejected, (state) => {
+                state.loadingCompanyProfile = 'rejected'
+            })
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(showCompany.fulfilled, (state, action: PayloadAction<any>) => {
+                console.log('done',action.payload.data.data)
                 if (typeof action.payload !== 'string') {
                     state.user = {
-                        signUpType: 0,
-                        id: state.user.id,
-                        phone: state.user.phone,
-                        createdAt: state.user.createdAt,
+                        ...state.user,
                         name: action.payload.data.data.name,
                         email: action.payload.data.data.email,
                         type: action.payload.data.data.type,
@@ -506,11 +576,26 @@ export const userSlice = createSlice({
                 }
 
             })
-            .addCase(updateCompanyProfile.pending, (state) => {
-                state.loadingCompanyProfile = 'pending'
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(updateSRProfile.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loadingSRProfile = 'fulfilled'
+                if (typeof action.payload !== 'string' && action.payload !== undefined) {
+                    console.log(action)
+                    state.userSR = {
+                        ...state.userSR,
+                        email: action.payload.data.data.researcher.email,
+                        name: action.payload.data.data.researcher.name,
+                        phone: action.payload.data.data.researcher.phone,
+                    }
+                }
+
             })
-            .addCase(updateCompanyProfile.rejected, (state) => {
-                state.loadingCompanyProfile = 'rejected'
+            .addCase(updateSRProfile.pending, (state) => {
+                state.loadingSRProfile = 'pending'
+            })
+            .addCase(updateSRProfile.rejected, (state) => {
+                state.loadingSRProfile = 'rejected'
             })
 
             .addCase(updateCompanyPassword.fulfilled, (state) => {

@@ -68,7 +68,7 @@ export default function SignUpCompany() {
 
         dispatch(registerCompany(formData)).then(unwrapResult).then(result => {
           if (typeof result !== 'string')
-            navigate('/login')
+            navigate('/auth/login')
           else{
             setError(result)
           }

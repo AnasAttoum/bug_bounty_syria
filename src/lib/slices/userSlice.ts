@@ -135,27 +135,6 @@ export const logIn = createAsyncThunk(
         }
     }
 )
-// export const logOutComapny = createAsyncThunk(
-//     'user/logOutComapny',
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     async (_, { getState }: any) => {
-//         const token = getState().reducers.user.token
-//         try {
-//             return await api.post(`/company/company/logout`,
-//                 {
-//                     headers: {
-//                         'Authorization': `Bearer ${token}`
-//                     },
-//                 }
-//             )
-//         }
-//         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//         catch (error: any) {
-//             return error.response.data.error
-//         }
-//     }
-// )
-
 export const homeCompany = createAsyncThunk(
     'user/homeCompany',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -345,6 +324,27 @@ export const addProgram = createAsyncThunk(
         }
     }
 )
+export const addReport = createAsyncThunk(
+    'user/addReport',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (data: FormData, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.post(`/researcher/add-reports-researcher`,
+                data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
 
 export const deleteProgram = createAsyncThunk(
     'user/deleteProgram',
@@ -447,6 +447,7 @@ export const userSlice = createSlice({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .addCase(logIn.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loadingLogIn = 'fulfilled'
+                console.log(action)
                 if (typeof action.payload !== 'string') {
                     if (action.payload.data.data.company !== undefined) {
                         state.token = action.payload.data.data.token

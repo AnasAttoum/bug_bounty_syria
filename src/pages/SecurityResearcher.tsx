@@ -21,13 +21,12 @@ export default function SecurityResearcher() {
     const [save, setSave] = useState<boolean>(false)
     const [slowTransitionOpenedRating, setSlowTransitionOpenedRating] = useState(false);
     const [SR, setSR] = useState<SR>({
-        code: false,
+        code: '',
         id: '',
         name: '',
         image: '',
         email: '',
         phone: '',
-        createAt: '',
         points: ''
     })
     const { ref: cards, inView: cardsInView, entry: cardsEntry } = useInView()

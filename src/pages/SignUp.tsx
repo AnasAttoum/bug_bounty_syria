@@ -4,24 +4,15 @@ import SignUpCompany from '../components/signUp/SignUpCompany';
 import SignUpSecurityResearcher from '../components/signUp/SignUpSecurityResearcher';
 import { Link } from 'react-router-dom';
 import SecondaryButton from '../components/buttons/SecondaryButton';
-import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { RootState } from '../lib/store';
-import { useNavigate } from "react-router-dom"
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'react-i18next';
 
 export default function SignUp() {
 
-    const { isLogged } = useSelector((state: RootState) => state.reducers.user)
-    const navigate = useNavigate()
     const { t } = useTranslation()
     const { ref: signUp, inView: signUpInView, entry: signUpEntry } = useInView()
 
-    useEffect(() => {
-        if (isLogged)
-            navigate('/')
-    }, [isLogged, navigate])
 
     useEffect(() => {
         if (signUpInView)

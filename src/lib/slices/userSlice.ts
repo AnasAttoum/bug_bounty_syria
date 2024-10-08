@@ -28,7 +28,7 @@ export interface SR {
     email: string,
     phone: string,
     points: string,
-    createdAt: string,
+    createdAt?: string,
     description?: string
 }
 export interface program {

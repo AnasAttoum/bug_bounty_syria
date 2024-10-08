@@ -533,8 +533,7 @@ export const userSlice = createSlice({
                 console.log(action.payload.data.data)
             })
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .addCase(updateCompanyProfile.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(updateCompanyProfile.fulfilled, (state) => {
                 state.loadingCompanyProfile = 'fulfilled'
                 // if (typeof action.payload !== 'string') {
                 //     state.user = {
@@ -620,7 +619,7 @@ export const userSlice = createSlice({
             })
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .addCase(deleteProgram.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(deleteProgram.fulfilled, (state, action:any) => {
                 state.programs = state.programs.filter((program) => {
                     return program.uuid !== action.meta.arg.get('uuid')
                 })

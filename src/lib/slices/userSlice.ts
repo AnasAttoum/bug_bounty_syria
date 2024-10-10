@@ -390,7 +390,7 @@ export const deleteProgram = createAsyncThunk(
 
 export const companyProfile = createAsyncThunk(
     'user/companyProfile',
-    async (uuid) => {
+    async (uuid:string) => {
         try {
             return await axios.get(`${import.meta.env.VITE_API}/researcher/company/${uuid}`,
                 {
@@ -409,7 +409,8 @@ export const companyProfile = createAsyncThunk(
 )
 
 
-const initialState: { token: string, signUpType: 0 | 1, user: company, userSR: SR, SRs: SR[], companies: company[], reports: [], programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingSRProfile: string, loadingCompanyPassword: string } = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const initialState: { token: string, signUpType: 0 | 1, user: company, userSR: SR, SRs: SR[], companies: company[], reports: any, programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingSRProfile: string, loadingCompanyPassword: string } = {
     token: '',
     signUpType: 0,
     user: { signUpType: 0, id: '', name: '', email: '', phone: '', image: '', people: '', type: '', description: '', domain: '', createdAt: '' },

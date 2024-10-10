@@ -39,22 +39,23 @@ export default function Company() {
     }, [imgInView, imgEntry])
 
     useEffect(() => {
-        dispatch(companyProfile(id)).then(unwrapResult).then(result => {
-            if (typeof result !== 'string') {
-                setCompany({
-                    image: result.data.data["company-data"].logo,
-                    name: result.data.data["company-data"].name,
-                    domain: result.data.data["company-data"].domain,
-                    description: result.data.data["company-data"].description,
-                    people: result.data.data["company-data"].employess_count,
-                    type: result.data.data["company-data"].type,
-                })
-                setPrograms(result.data.data["company-data"].products)
-            }
-            else {
-                console.log('2')
-            }
-        })
+        if (id)
+            dispatch(companyProfile(id)).then(unwrapResult).then(result => {
+                if (typeof result !== 'string') {
+                    setCompany({
+                        image: result.data.data["company-data"].logo,
+                        name: result.data.data["company-data"].name,
+                        domain: result.data.data["company-data"].domain,
+                        description: result.data.data["company-data"].description,
+                        people: result.data.data["company-data"].employess_count,
+                        type: result.data.data["company-data"].type,
+                    })
+                    setPrograms(result.data.data["company-data"].products)
+                }
+                else {
+                    console.log('2')
+                }
+            })
     }, [id, dispatch])
 
     useEffect(() => {
@@ -131,7 +132,7 @@ export default function Company() {
                             <div style={{ width: '20vw', textAlign: 'center' }}>{title}</div>
                             <div style={{ width: '20vw', textAlign: 'center', marginInline: '10px' }}>{url}</div>
                             <div style={{ width: '30vw', textAlign: 'justify' }}>{description}</div>
-                            <Button variant="outline" color="primary.0" className={styles.btn2} onClick={()=>{open();setUUID(uuid)}}> {t('submitReport')} &nbsp;<IconCloudUpload size={13} style={{ transform: 'rotateY(180deg)' }} /></Button>
+                            <Button variant="outline" color="primary.0" className={styles.btn2} onClick={() => { open(); setUUID(uuid) }}> {t('submitReport')} &nbsp;<IconCloudUpload size={13} style={{ transform: 'rotateY(180deg)' }} /></Button>
                         </div>
                     })}
                     {/* <div className={`${styles.row} flex gap-5 justify-evenly py-3`} style={{ borderBottom: '1px solid #999' }}>
@@ -148,7 +149,7 @@ export default function Company() {
 
             </div>
 
-            <ModalReport opened={opened} close={close} uuid={uuid}/>
+            <ModalReport opened={opened} close={close} uuid={uuid} />
         </>
     )
 }

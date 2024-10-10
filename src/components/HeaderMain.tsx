@@ -152,7 +152,7 @@ export default function HeaderMain() {
                                 {user.image === null || user.image === '' ?
                                     <Avatar color="red" radius="xl" name={user.name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
                                     :
-                                    <img src={'https://api.bug-bounty.darrebni.net/storage/app/public/' + user.image} alt={user.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                                    <img src={user.image} alt={user.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
                                 }
                             </>
                             :
@@ -160,7 +160,7 @@ export default function HeaderMain() {
                                 {userSR.image === null || userSR.image === '' ?
                                     <Avatar color="red" radius="xl" name={userSR.name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
                                     :
-                                    <img src={'https://api.bug-bounty.darrebni.net/storage/app/public/' + userSR.image} alt={userSR.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                                    <img src={userSR.image} alt={userSR.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
                                 }
                             </>
                     }
@@ -236,7 +236,7 @@ export default function HeaderMain() {
                         {user.image === null || user.image === '' ?
                             <Avatar color="red" radius="xl" name={user.name} style={{ outline: '2px solid var(--primary)', outlineOffset: '3px', cursor: 'pointer' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
                             :
-                            <img src={'https://api.bug-bounty.darrebni.net/storage/app/public/' + user.image} alt={user.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
+                            <img src={user.image} alt={user.name} style={{ width: '38px', height: '38px', borderRadius: '50%' }} onClick={() => { navigate('/profile'); setHamb(false) }} />
                         }
 
                     </div>

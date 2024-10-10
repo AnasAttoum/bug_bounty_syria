@@ -109,7 +109,7 @@ export default function SecurityResearcher() {
 
                 </div>
 
-                <div className="font-extrabold">{t('companyPrograms')}</div>
+                {/* <div className="font-extrabold">{t('companyPrograms')}</div>
 
                 <div className='flex flex-col gap-5' ref={cards}>
                     <div className={`${styles.head} flex justify-evenly`} style={{ color: 'var(--primary)', borderBottom: '1px solid var(--primary)' }}>
@@ -139,7 +139,7 @@ export default function SecurityResearcher() {
                         <div style={{ width: '30vw', textAlign: 'center', marginInline: '10px' }}>11/05/2024</div>
                         <div style={{ width: '30vw', textAlign: 'center' }}>{rate} / 5.0</div>
                     </div>
-                </div>
+                </div> */}
 
             </div>
 

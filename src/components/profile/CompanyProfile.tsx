@@ -46,7 +46,7 @@ export default function CompanyProfile() {
 
     useEffect(() => {
         const x = user.image === '' ? 'null' : user.image
-        setImage('https://api.bug-bounty.darrebni.net/storage/app/public/' + x)
+        setImage(x)
 
         setData({
             domain: user.domain,

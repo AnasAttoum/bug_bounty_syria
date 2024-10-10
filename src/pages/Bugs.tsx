@@ -44,7 +44,7 @@ export default function Bugs() {
       )
     else
       setElements(
-        allReports.reports.map((report: { title: string, created_at: string, file: string, status: string, researcher: { name: string } }) => {
+        allReports.reports.map((report: { title: string, company_name: string, created_at: string, file: string, status: string }) => {
           return {
             bugName: report.title,
             name: report.company_name,
@@ -55,7 +55,7 @@ export default function Bugs() {
           }
         })
       )
-  }, [allReports,signUpType])
+  }, [allReports, signUpType])
 
 
 

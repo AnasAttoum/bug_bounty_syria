@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { useParams } from "react-router-dom"
-import { RootState } from "../lib/store"
+import { AppDispatch } from "../lib/store"
 import { IconBookmark, IconBookmarkFilled, IconBuilding, IconExternalLink, IconUsers, IconWorld, IconCloudUpload } from "@tabler/icons-react"
 import { Button } from "@mantine/core"
 
@@ -10,14 +10,14 @@ import { useDisclosure } from "@mantine/hooks"
 import ModalReport from "../components/Modal/ModalReport"
 import { useInView } from "react-intersection-observer"
 import { useTranslation } from "react-i18next"
-import { company } from "../lib/slices/userSlice"
+import { company, companyProfile } from "../lib/slices/userSlice"
+import { unwrapResult } from "@reduxjs/toolkit"
 
 export default function Company() {
 
-    const { companies } = useSelector((state: RootState) => state.reducers.user)
-
     const { id } = useParams()
     const { t } = useTranslation()
+    const dispatch = useDispatch<AppDispatch>()
 
     const [save, setSave] = useState<boolean>(false)
     const [company, setCompany] = useState<company>({
@@ -28,6 +28,8 @@ export default function Company() {
         people: '',
         type: '',
     })
+    const [programs, setPrograms] = useState<{ uuid: string, title: string, url: string, description: string }[]>([])
+    const [uuid, setUUID] = useState<string>('')
     const { image, name, domain: link, description, people, type } = company
     const { ref: cards, inView: cardsInView, entry: cardsEntry } = useInView()
     const { ref: img, inView: imgInView, entry: imgEntry } = useInView()
@@ -37,13 +39,23 @@ export default function Company() {
     }, [imgInView, imgEntry])
 
     useEffect(() => {
-        let x
-        if (id) {
-            x = companies.find((company) => { return company.id === id })
-            if (x)
-                setCompany(x)
-        }
-    }, [companies, id])
+        dispatch(companyProfile(id)).then(unwrapResult).then(result => {
+            if (typeof result !== 'string') {
+                setCompany({
+                    image: result.data.data["company-data"].logo,
+                    name: result.data.data["company-data"].name,
+                    domain: result.data.data["company-data"].domain,
+                    description: result.data.data["company-data"].description,
+                    people: result.data.data["company-data"].employess_count,
+                    type: result.data.data["company-data"].type,
+                })
+                setPrograms(result.data.data["company-data"].products)
+            }
+            else {
+                console.log('2')
+            }
+        })
+    }, [id, dispatch])
 
     useEffect(() => {
         if (cardsInView)
@@ -96,7 +108,6 @@ export default function Company() {
                             <a href={link.trim().startsWith('www.') ? `https://${link.trim()}` : link} target='_blank' rel="noopener noreferrer">
                                 <Button className={styles.btn} style={{ paddingInline: '10px' }} color="primary.0">{t('visitSite')} &nbsp;<IconExternalLink size={13} style={{ transform: 'rotateY(180deg)' }} /></Button>
                             </a>
-                            <Button variant="outline" color="primary.0" className={styles.btn2} onClick={open}> {t('submitReport')} &nbsp;<IconCloudUpload size={13} style={{ transform: 'rotateY(180deg)' }} /></Button>
                         </div>
 
                     </div>
@@ -112,9 +123,18 @@ export default function Company() {
                     <div className={`${styles.head} flex justify-evenly`} style={{ color: 'var(--primary)', borderBottom: '1px solid var(--primary)' }}>
                         <div style={{ width: '20vw', textAlign: 'center' }}>{t('programName')}</div>
                         <div style={{ width: '20vw', textAlign: 'center' }}>{t('programLink')}</div>
-                        <div style={{ width: '40vw', textAlign: 'center' }}>{t('description')}</div>
+                        <div style={{ width: '30vw', textAlign: 'center' }}>{t('description')}</div>
+                        <div style={{ width: '10vw', textAlign: 'center' }}></div>
                     </div>
-                    <div className={`${styles.row} flex gap-5 justify-evenly py-3`} style={{ borderBottom: '1px solid #999' }}>
+                    {programs.map(({ uuid, title, url, description }, index) => {
+                        return <div className={`${styles.row} flex gap-5 justify-evenly py-3`} style={index + 1 === programs.length ? {} : { borderBottom: '1px solid #999' }}>
+                            <div style={{ width: '20vw', textAlign: 'center' }}>{title}</div>
+                            <div style={{ width: '20vw', textAlign: 'center', marginInline: '10px' }}>{url}</div>
+                            <div style={{ width: '30vw', textAlign: 'justify' }}>{description}</div>
+                            <Button variant="outline" color="primary.0" className={styles.btn2} onClick={()=>{open();setUUID(uuid)}}> {t('submitReport')} &nbsp;<IconCloudUpload size={13} style={{ transform: 'rotateY(180deg)' }} /></Button>
+                        </div>
+                    })}
+                    {/* <div className={`${styles.row} flex gap-5 justify-evenly py-3`} style={{ borderBottom: '1px solid #999' }}>
                         <div style={{ width: '20vw', textAlign: 'center' }}>البرنامج الأول</div>
                         <div style={{ width: '20vw', textAlign: 'center', marginInline: '10px' }}>www.FirstApp.com</div>
                         <div style={{ width: '40vw', textAlign: 'justify' }}>البرنامج الأول هو عبارة تطبيق يعمل حل مشكلة التطبيق الذي يعمل على إيجاد مشكلة لبرنامج معين بناء على تطبيقات</div>
@@ -123,12 +143,12 @@ export default function Company() {
                         <div style={{ width: '20vw', textAlign: 'center' }}>البرنامج الأول</div>
                         <div style={{ width: '20vw', textAlign: 'center', marginInline: '10px' }}>www.FirstApp.com</div>
                         <div style={{ width: '40vw', textAlign: 'justify' }}>البرنامج الأول هو عبارة تطبيق يعمل حل مشكلة التطبيق الذي يعمل على إيجاد مشكلة لبرنامج معين بناء على تطبيقات</div>
-                    </div>
+                    </div> */}
                 </div>
 
             </div>
 
-            <ModalReport opened={opened} close={close} />
+            <ModalReport opened={opened} close={close} uuid={uuid}/>
         </>
     )
 }

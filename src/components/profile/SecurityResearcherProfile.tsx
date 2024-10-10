@@ -41,7 +41,7 @@ export default function SecurityResearcherProfile() {
 
     useEffect(() => {
         const x = img === '' ? 'null' : img
-        setImage(import.meta.env.VITE_IMAGE_URL + x)
+        setImage(x)
         setData({
             name: name,
             email: email,

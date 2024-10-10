@@ -196,6 +196,26 @@ export const reports = createAsyncThunk(
         }
     }
 )
+export const reportsResearcher = createAsyncThunk(
+    'user/reportsResearcher',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (_, { getState }: { getState: () => any }) => {
+        const token = getState().reducers.user.token
+        try {
+            return await api.get(`/researcher/reports-researcher`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
 
 export const updateCompanyProfile = createAsyncThunk(
     'user/updateCompanyProfile',
@@ -368,6 +388,26 @@ export const deleteProgram = createAsyncThunk(
     }
 )
 
+export const companyProfile = createAsyncThunk(
+    'user/companyProfile',
+    async (uuid) => {
+        try {
+            return await axios.get(`${import.meta.env.VITE_API}/researcher/company/${uuid}`,
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        catch (error: any) {
+            return error.response.data.error
+        }
+    }
+)
+
 
 const initialState: { token: string, signUpType: 0 | 1, user: company, userSR: SR, SRs: SR[], companies: company[], reports: [], programs: program[], loadingCompany: string, loadingSR: string, loadingCode: string, loadingLogIn: string, loadingCompanyProfile: string, loadingSRProfile: string, loadingCompanyPassword: string } = {
     token: '',
@@ -529,8 +569,13 @@ export const userSlice = createSlice({
             })
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .addCase(reports.fulfilled, (_state, action: PayloadAction<any>) => {
+            .addCase(reports.fulfilled, (state, action: PayloadAction<any>) => {
+                state.reports=action.payload.data.data
+            })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .addCase(reportsResearcher.fulfilled, (state, action: PayloadAction<any>) => {
                 console.log(action.payload.data.data)
+                state.reports=action.payload.data.data
             })
 
             .addCase(updateCompanyProfile.fulfilled, (state) => {

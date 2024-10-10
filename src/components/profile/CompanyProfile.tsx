@@ -46,7 +46,7 @@ export default function CompanyProfile() {
 
     useEffect(() => {
         const x = user.image === '' ? 'null' : user.image
-        setImage(import.meta.env.VITE_IMAGE_URL + x)
+        setImage('https://api.bug-bounty.darrebni.net/storage/app/public/' + x)
 
         setData({
             domain: user.domain,
@@ -98,7 +98,7 @@ export default function CompanyProfile() {
             dispatch(updateCompanyProfile(formData)).unwrap().then(result => {
                 if (typeof result === 'string')
                     setError(result)
-                else{
+                else {
                     dispatch(showCompany())
                     setError('')
                 }

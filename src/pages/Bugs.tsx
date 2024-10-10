@@ -8,46 +8,82 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../lib/store';
 import { IconCirclePlus } from '@tabler/icons-react';
 import ModalRating from '../components/Modal/ModalRating';
-import { reports } from '../lib/slices/userSlice';
+import { reports, reportsResearcher } from '../lib/slices/userSlice';
 
 export default function Bugs() {
 
-  const { signUpType } = useSelector((state: RootState) => state.reducers.user)
+  const { signUpType, reports: allReports } = useSelector((state: RootState) => state.reducers.user)
 
   const [page, setPage] = useState(1);
+  const [elements, setElements] = useState<{ bugName: string, name: string, submissionDate: string, bugFile: string, bugStatus: string, bugAssessment: string }[]>([]);
   const [slowTransitionOpenedRating, setSlowTransitionOpenedRating] = useState(false);
   const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
 
-  useEffect(()=>{
-    dispatch(reports())
-  },[dispatch])
-
-  const elements = [
-    { bugName: 'تسجيل', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
-    { bugName: 'نقل بيانات', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '0' },
-    { bugName: 'DDoS', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '0' },
+  useEffect(() => {
+    if (signUpType === 0)
+      dispatch(reports())
+    else
+      dispatch(reportsResearcher())
+  }, [dispatch, signUpType])
 
 
-    { bugName: 'برمجيات خبيثة', name: '5', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: '10', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: '15', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
-    { bugName: 'برمجيات خبيثة', name: '20', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
+  useEffect(() => {
+    if (signUpType === 0)
+      setElements(
+        allReports.report.map((report: { title: string, created_at: string, file: string, status: string, researcher: { name: string } }) => {
+          return {
+            bugName: report.title,
+            name: report.researcher.name,
+            submissionDate: report.created_at,
+            bugFile: report.file,
+            bugStatus: report.status,
+            bugAssessment: '3'
+          }
+        })
+      )
+    else
+      setElements(
+        allReports.reports.map((report: { title: string, created_at: string, file: string, status: string, researcher: { name: string } }) => {
+          return {
+            bugName: report.title,
+            name: report.company_name,
+            submissionDate: report.created_at,
+            bugFile: report.file,
+            bugStatus: report.status,
+            bugAssessment: '3'
+          }
+        })
+      )
+  }, [allReports,signUpType])
 
-  ];
+
+
+  // const elements = [
+  //   { bugName: 'تسجيل', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
+  //   { bugName: 'نقل بيانات', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '0' },
+  //   { bugName: 'DDoS', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '0' },
+
+
+  //   { bugName: 'برمجيات خبيثة', name: '5', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: '10', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: '15', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Accept', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Pending', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: 'دربني', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
+  //   { bugName: 'برمجيات خبيثة', name: '20', submissionDate: '11/05/2024', bugFile: 'FirstOne.pdf', bugStatus: 'Reject', bugAssessment: '5' },
+
+  // ];
 
   const rows = elements.slice(15 * (page - 1), 15 * (page - 1) + 15).map((element, index) => (
     <Table.Tr key={index} style={index % 2 !== 0 ? { backgroundColor: '#0001' } : {}}>
@@ -56,9 +92,9 @@ export default function Bugs() {
       <Table.Td>{element.submissionDate}</Table.Td>
       <Table.Td>{element.bugFile}</Table.Td>
       <Table.Td>
-        {element.bugStatus === 'Accept' ?
+        {element.bugStatus === 'accept' ?
           <span style={{ color: 'var(--accept)', backgroundColor: 'var(--acceptOpacity)', border: '1px solid var(--accept)', borderRadius: '4px', paddingInline: '5px' }}>Accept</span>
-          : element.bugStatus === 'Pending' ?
+          : element.bugStatus === 'pending' ?
             <span style={{ color: 'var(--pending)', backgroundColor: 'var(--pendingOpacity)', border: '1px solid var(--pending)', borderRadius: '4px', paddingInline: '5px' }}>Pending</span>
             :
             <span style={{ color: 'var(--reject)', backgroundColor: 'var(--rejectOpacity)', border: '1px solid var(--reject)', borderRadius: '4px', paddingInline: '5px' }}>Reject</span>
@@ -66,7 +102,7 @@ export default function Bugs() {
       </Table.Td>
       <Table.Td>
         {(signUpType as number) === 0 ?
-          parseInt(element.bugAssessment) === 0 ? <span><IconCirclePlus stroke={2} style={{ cursor: 'pointer' }} onClick={()=>setSlowTransitionOpenedRating(true)} /></span> : <span>{element.bugAssessment} / 5</span>
+          parseInt(element.bugAssessment) === 0 ? <span><IconCirclePlus stroke={2} style={{ cursor: 'pointer' }} onClick={() => setSlowTransitionOpenedRating(true)} /></span> : <span>{element.bugAssessment} / 5</span>
           :
           parseInt(element.bugAssessment) === 0 ? <span>{t('notYet')}</span> : <span>{element.bugAssessment} / 5</span>
         }

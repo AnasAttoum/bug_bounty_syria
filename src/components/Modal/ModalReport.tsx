@@ -1,10 +1,13 @@
 import { Button, FileButton, Group, Input, Modal, Text } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconClipboardText, IconCloudUpload } from '@tabler/icons-react';
 
 import styles from '../../styles/company.module.css'
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../lib/store';
+import { addReport } from '../../lib/slices/userSlice';
 
-export default function ModalReport({ opened, close }: { opened: boolean, close: () => void }) {
+export default function ModalReport({ opened, close, uuid }: { opened: boolean, close: () => void, uuid: string }) {
 
     const [report, setReport] = useState('')
 
@@ -16,7 +19,16 @@ export default function ModalReport({ opened, close }: { opened: boolean, close:
         setReport(e.target.value)
     }
 
+    useEffect(() => {
+        setFile(null)
+        setWarning('')
+        setReport('')
+    }, [opened])
+
+    const dispatch = useDispatch<AppDispatch>()
+
     const handleSendReport = () => {
+        setWarning('')
         if (report === '')
             setWarning('اسم التقرير غير صالح')
 
@@ -24,9 +36,18 @@ export default function ModalReport({ opened, close }: { opened: boolean, close:
             setWarning('التقرير غير صالح')
 
         else {
-            console.log(report)
             console.log(file)
-            close()
+            const formData = new FormData()
+            formData.append('product_uuid', uuid)
+            formData.append('title', report)
+            formData.append('report_file', file)
+
+            dispatch(addReport(formData)).unwrap().then(result => {
+                if (typeof result === 'string')
+                    setWarning(result)
+                else
+                    close()
+            })
         }
     }
 
@@ -52,7 +73,7 @@ export default function ModalReport({ opened, close }: { opened: boolean, close:
 
                     <div className='flex flex-col'>
                         <Group justify="center">
-                            <FileButton onChange={setFile} accept="txt">
+                            <FileButton onChange={setFile} accept="pdf">
                                 {(props) => <Button {...props} variant="outline" color="primary.0" className={styles.btn2} style={{ width: '100%' }}><IconCloudUpload /></Button>}
                             </FileButton>
                         </Group>

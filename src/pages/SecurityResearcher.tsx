@@ -29,7 +29,7 @@ export default function SecurityResearcher() {
         phone: '',
         points: ''
     })
-    const { ref: cards, inView: cardsInView, entry: cardsEntry } = useInView()
+    // const { ref: cards, inView: cardsInView, entry: cardsEntry } = useInView()
     const { ref: img, inView: imgInView, entry: imgEntry } = useInView()
     useEffect(() => {
         if (imgInView)
@@ -45,12 +45,12 @@ export default function SecurityResearcher() {
         }
     }, [SRs, id])
 
-    useEffect(() => {
-        if (cardsInView)
-            cardsEntry?.target.childNodes.forEach((el, index) => {
-                (el as HTMLElement).style.animation = `animation 1s ${index / 2}s forwards`
-            })
-    }, [cardsInView, cardsEntry])
+    // useEffect(() => {
+    //     if (cardsInView)
+    //         cardsEntry?.target.childNodes.forEach((el, index) => {
+    //             (el as HTMLElement).style.animation = `animation 1s ${index / 2}s forwards`
+    //         })
+    // }, [cardsInView, cardsEntry])
 
     useEffect(() => {
         window.scrollTo({

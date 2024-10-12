@@ -12,7 +12,7 @@ import { reports, reportsResearcher } from '../lib/slices/userSlice';
 
 export default function Bugs() {
 
-  const { signUpType, reports: allReports } = useSelector((state: RootState) => state.reducers.user)
+  const { signUpType, reports: allReports, reportsSR: allReportsSR } = useSelector((state: RootState) => state.reducers.user)
 
   const [page, setPage] = useState(1);
   const [elements, setElements] = useState<{ bugName: string, name: string, submissionDate: string, bugFile: string, bugStatus: string, bugAssessment: string }[]>([]);
@@ -44,7 +44,7 @@ export default function Bugs() {
       )
     else
       setElements(
-        allReports.reports.map((report: { title: string, company_name: string, created_at: string, file: string, status: string }) => {
+        allReportsSR.reports.map((report: { title: string, company_name: string, created_at: string, file: string, status: string }) => {
           return {
             bugName: report.title,
             name: report.company_name,
@@ -55,7 +55,7 @@ export default function Bugs() {
           }
         })
       )
-  }, [allReports, signUpType])
+  }, [allReports, signUpType, allReportsSR])
 
 
 
